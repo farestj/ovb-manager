@@ -421,70 +421,204 @@ body {
 }
 
 /* ==========================================================================
-   НАВИГАЦИЯ ПО ВКЛАДКАМ В СТИЛЕ OVB
+   ВЕРТИКАЛЬНАЯ БОКОВАЯ НАВИГАЦИЯ (ВЫЕЗЖАЮЩЕЕ МЕНЮ СЛЕВА + КРУГЛАЯ КНОПКА)
    ========================================================================== */
+.side-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 40, 78, 0.36);
+  backdrop-filter: blur(2px);
+  z-index: 140;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.side-nav-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
 .nav-tabs-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 86vw;
   background: #ffffff;
-  border-bottom: 1px solid var(--ovb-silver-border);
-  position: sticky;
-  top: 104px;
-  z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  border-right: 1px solid var(--ovb-card-border);
+  box-shadow: 6px 0 28px rgba(14, 40, 78, 0.22);
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(-105%);
+  visibility: hidden;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.26s ease;
+}
+
+.nav-tabs-bar.open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.side-nav-header {
+  height: 44px;
+  min-height: 44px;
+  background: var(--ovb-navy);
+  color: #ffffff;
+  padding: 0 14px 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.side-nav-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.side-nav-close-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.side-nav-close-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .nav-tabs-inner {
-  max-width: 1480px;
-  margin: 0 auto;
+  flex: 1;
   display: flex;
-  gap: 6px;
-  padding: 6px 16px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.nav-tabs-inner::-webkit-scrollbar {
-  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 12px 96px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .tab-btn {
+  width: 100%;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-slate);
   font-weight: 600;
-  font-size: 12.5px;
-  padding: 7px 11px;
-  border-radius: 6px;
+  font-size: 13.5px;
+  padding: 11px 14px;
+  border-radius: 8px;
   cursor: pointer;
-  white-space: nowrap;
-  display: inline-flex;
+  white-space: normal;
+  text-align: left;
+  display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 8px;
   transition: all 0.15s ease;
+  line-height: 1.3;
 }
 
 .tab-btn:hover {
   background: var(--ovb-card-hover);
   color: var(--ovb-navy);
+  border-color: rgba(130, 156, 191, 0.45);
 }
 
 .tab-btn.active {
   background: var(--ovb-navy);
   color: #ffffff;
-  box-shadow: 0 2px 5px rgba(2, 90, 178, 0.25);
+  box-shadow: 0 3px 10px rgba(2, 90, 178, 0.28);
 }
 
 .tab-badge {
   background: var(--ovb-teal);
   color: #fff;
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .tab-btn:not(.active) .tab-badge {
   background: var(--ovb-silver);
   color: var(--ovb-navy-text);
+}
+
+/* Круглая кнопка меню (просто три полоски) в нижнем левом углу */
+.side-nav-fab {
+  position: fixed;
+  left: 22px;
+  bottom: 22px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--ovb-navy);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 20px rgba(2, 90, 178, 0.4), 0 2px 6px rgba(14, 40, 78, 0.2);
+  cursor: pointer;
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.side-nav-fab:hover {
+  background: var(--ovb-navy-dark);
+  transform: scale(1.06);
+  box-shadow: 0 8px 24px rgba(2, 90, 178, 0.48), 0 3px 8px rgba(14, 40, 78, 0.24);
+}
+
+.side-nav-fab:active {
+  transform: scale(0.96);
+}
+
+.side-nav-fab-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 22px;
+  height: 16px;
+}
+
+.side-nav-fab-lines span {
+  display: block;
+  width: 100%;
+  height: 2.5px;
+  background: #ffffff;
+  border-radius: 999px;
+  transition: transform 0.22s ease, opacity 0.18s ease;
+  transform-origin: center;
+}
+
+.side-nav-fab.open .side-nav-fab-lines span:nth-child(1) {
+  transform: translateY(6.75px) rotate(45deg);
+}
+
+.side-nav-fab.open .side-nav-fab-lines span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.side-nav-fab.open .side-nav-fab-lines span:nth-child(3) {
+  transform: translateY(-6.75px) rotate(-45deg);
 }
 
 /* Основной контейнер страниц */
@@ -1581,19 +1715,11 @@ body {
     top: auto;
     position: static;
   }
-  .nav-tabs-bar {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    position: fixed;
-    border-top: 1px solid var(--ovb-card-border);
-    border-bottom: none;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
-  }
-  .tab-btn {
-    padding: 7px 10px;
-    font-size: 11.5px;
+  .side-nav-fab {
+    left: 16px;
+    bottom: 18px;
+    width: 50px;
+    height: 50px;
   }
 }
 
@@ -2013,8 +2139,15 @@ body {
     </div>
   </div>
 
-  <!-- НАВИГАЦИЯ ПО ВКЛАДКАМ -->
-  <nav class="nav-tabs-bar">
+  <!-- ЗАТЕМНЕНИЕ ФОНА ПРИ ОТКРЫТОМ БОКОВОМ МЕНЮ -->
+  <div id="sideNavBackdrop" class="side-nav-backdrop" onclick="closeSideNav()"></div>
+
+  <!-- БОКОВАЯ ВЕРТИКАЛЬНАЯ НАВИГАЦИЯ ПО ВКЛАДКАМ (ВЫЕЗЖАЕТ СЛЕВА) -->
+  <nav id="sideNavDrawer" class="nav-tabs-bar" aria-label="Меню разделов">
+    <div class="side-nav-header">
+      <span id="sideNavTitle" class="side-nav-title">Навигация</span>
+      <button type="button" class="side-nav-close-btn" onclick="closeSideNav()" aria-label="Закрыть меню" title="Закрыть меню">✕</button>
+    </div>
     <div class="nav-tabs-inner">
       <button class="tab-btn active" data-tab="pyramid" onclick="switchTab('pyramid')">
         <span id="tabLabelPyramid">🔺 1. Вертикаль и Повышение</span>
@@ -2035,6 +2168,23 @@ body {
       </button>
     </div>
   </nav>
+
+  <!-- КРУГЛАЯ КНОПКА МЕНЮ (ТРИ ПОЛОСКИ) В НИЖНЕМ ЛЕВОМ УГЛУ -->
+  <button
+    type="button"
+    id="sideNavToggleBtn"
+    class="side-nav-fab"
+    onclick="toggleSideNav()"
+    aria-label="Меню"
+    aria-expanded="false"
+    aria-controls="sideNavDrawer"
+    title="Меню">
+    <span class="side-nav-fab-lines" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
 
   <!-- ОСНОВНОЙ КОНТЕНТ -->
   <main class="main-container">
@@ -5011,7 +5161,7 @@ function updateInfluenceTabVisibility() {
   const influenceTabBtn = document.getElementById('tabBtnInfluence') || document.querySelector('.tab-btn[data-tab="influence"]');
 
   if (influenceTabBtn) {
-    influenceTabBtn.style.display = allowed ? 'inline-flex' : 'none';
+    influenceTabBtn.style.display = allowed ? '' : 'none';
   }
 
   // Если доступ запрещен, но вкладка активна — переключаем на пирамиду
@@ -5026,6 +5176,49 @@ function updateInfluenceTabVisibility() {
   }
 }
 
+function openSideNav() {
+  const drawer = document.getElementById('sideNavDrawer');
+  const backdrop = document.getElementById('sideNavBackdrop');
+  const btn = document.getElementById('sideNavToggleBtn');
+  if (drawer) drawer.classList.add('open');
+  if (backdrop) backdrop.classList.add('open');
+  if (btn) {
+    btn.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function closeSideNav() {
+  const drawer = document.getElementById('sideNavDrawer');
+  const backdrop = document.getElementById('sideNavBackdrop');
+  const btn = document.getElementById('sideNavToggleBtn');
+  if (drawer) drawer.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+  if (btn) {
+    btn.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function toggleSideNav() {
+  const drawer = document.getElementById('sideNavDrawer');
+  if (drawer && drawer.classList.contains('open')) {
+    closeSideNav();
+  } else {
+    openSideNav();
+  }
+}
+
+window.openSideNav = openSideNav;
+window.closeSideNav = closeSideNav;
+window.toggleSideNav = toggleSideNav;
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    closeSideNav();
+  }
+});
+
 function switchTab(tabId) {
   if (tabId === 'influence' && !canAccessInfluenceTab()) {
     return;
@@ -5037,6 +5230,7 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-panel').forEach(panel => {
     panel.classList.toggle('active', panel.id === `panel-${tabId}`);
   });
+  closeSideNav();
   renderAll();
 }
 
@@ -5077,6 +5271,8 @@ const I18N = {
     tab_clients: "👥 3. Клиенты и Услуги OVB",
     tab_influence: "⚖️ 4. Влияние переменных",
     tab_guide: "📘 5. Справочник карьеры OVB",
+    nav_menu_title: "Навигация",
+    nav_menu_btn_title: "Меню",
     topbar_chat: "Чат",
     topbar_profile: "Профиль:",
     btn_cloud: "☁️ Облако",
@@ -5254,6 +5450,8 @@ const I18N = {
     tab_clients: "👥 3. Klienti a Služby OVB",
     tab_influence: "⚖️ 4. Vplyv premenných",
     tab_guide: "📘 5. Kariérny plán OVB",
+    nav_menu_title: "Navigácia",
+    nav_menu_btn_title: "Menu",
     topbar_chat: "Čat",
     topbar_profile: "Profil:",
     btn_cloud: "☁️ Cloud",
@@ -5433,6 +5631,8 @@ const I18N = {
     tab_clients: "👥 3. Клієнти та Послуги OVB",
     tab_influence: "⚖️ 4. Вплив змінних",
     tab_guide: "📘 5. Довідник кар'єри OVB",
+    nav_menu_title: "Навігація",
+    nav_menu_btn_title: "Меню",
     topbar_chat: "Чат",
     topbar_profile: "Профіль:",
     btn_cloud: "☁️ Хмара",
@@ -6022,6 +6222,15 @@ function changeLanguage(lang) {
 
   const tabLabelGuide = document.getElementById('tabLabelGuide');
   if (tabLabelGuide) tabLabelGuide.textContent = t('tab_guide');
+
+  const sideNavTitle = document.getElementById('sideNavTitle');
+  if (sideNavTitle) sideNavTitle.textContent = t('nav_menu_title');
+
+  const sideNavToggleBtn = document.getElementById('sideNavToggleBtn');
+  if (sideNavToggleBtn) {
+    sideNavToggleBtn.title = t('nav_menu_btn_title');
+    sideNavToggleBtn.setAttribute('aria-label', t('nav_menu_btn_title'));
+  }
 
   // Toolbar Tab 1
   const lblFocusUnder = document.getElementById('lblFocusUnder');
