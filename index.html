@@ -8906,7 +8906,7 @@ async function sendAdminRegistrationNotification(email, fullName) {
       email: email,
       timestamp: new Date().toLocaleString('ru-RU'),
       notice: 'Сотрудник подтверждает корпоративную почту и ожидает назначения в вертикаль OVB Администратором.',
-      appUrl: 'https://i9883cd3k5.brewpage.app/'
+      appUrl: window.location.href
     };
     fetch('https://formsubmit.co/ajax/matvejanickij@gmail.com', {
       method: 'POST',
