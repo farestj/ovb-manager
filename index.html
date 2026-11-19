@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#003057" />
+  <meta name="theme-color" content="#025AB2" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>OVB Allfinanz — Вертикаль работников, Карьера и Таблицы клиентов</title>
@@ -11,39 +11,69 @@
   <style>
 :root {
   /* ==========================================================================
-     ОФИЦИАЛЬНЫЙ ДИЗАЙН-КОД ПОРТАЛА OVB (https://disk.ovb.sk/portal/home)
+     ОФИЦИАЛЬНЫЙ ДИЗАЙН-КОД ПОРТАЛА OVB SLOVENSKO (https://disk.ovb.sk)
      ========================================================================== */
-  --ovb-navy: #025AB2;          /* Официальный королевский синий OVB (Header, Active Tabs, Section H2) */
-  --ovb-navy-dark: #004080;     /* Темно-синий ховер (hover:bg-[#025AB2]/80) */
-  --ovb-navy-text: #0E284E;     /* Темно-синий фирменный цвет текста (.text-blue) */
-  --ovb-teal: #2BBADA;          /* Фирменный бирюзовый CTA акцент OVB (Kalendár, экшен-кнопки) */
-  --ovb-teal-hover: rgba(43, 186, 218, 0.85);
-  --ovb-teal-light: #E8F8FA;    /* Светло-бирюзовый фон */
-  --ovb-blue-light: #1FB6FF;    /* Небесно-голубой акцент (.text-blue-light) */
-  --ovb-red: #EB3841;           /* Официальный красный OVB (плашки дат, важные бейджи) */
-  --ovb-silver: #E1E3E6;        /* Подшапка OVB (Sub-header bar) */
-  --ovb-silver-border: #CCCCCC; /* Нижняя граница подшапки OVB */
-  --ovb-card-border: #829CBF;   /* Стальной сине-серый бордюр карточек и таблиц OVB */
-  --ovb-card-hover: #F0F5FA;    /* Мягкий ледяной синий фон при наведении (карточки и строки списков) */
-  --ovb-snow-hover: #F9FAFC;    /* Чистый снежно-белый ховер строк */
-  --ovb-green: #5FCA71;         /* Положительный зеленый цвет OVB (.bg-positive) */
-  --ovb-green-soft: #F0FDF4;    /* Светло-зеленый фон выполненных планов */
-  --ovb-green-badge: #16a34a;   /* Темно-зеленый бейдж повышения */
-  --ovb-btn-idle: #EBEBEB;      /* Фон вторичных кнопок карточек OVB */
-  --bg-main: #F0F2F6;           /* Фон страниц OVB (bg-dark-snow) */
-  --bg-card: #FFFFFF;           /* Поверхность карточек */
-  --text-main: #0E284E;         /* Основной цвет текста */
-  --text-slate: #3E4857;        /* Вторичный цвет текста (.text-slate) */
-  --text-muted: #8792A4;        /* Приглушенный цвет текста (.text-silver) */
-  --border-color: #D6D9E2;      /* Разделители инпутов (border-extra-dark-snow) */
-  --danger: #EB3841;            /* Красный OVB */
-  --warning: #f59e0b;           /* Янтарный */
-  --radius-lg: 8px;             /* Скругление карточек OVB (rounded-lg / 0.5rem) */
-  --radius-md: 6px;
-  --radius-sm: 4px;
-  --shadow-sm: 0 1px 3px rgba(14, 40, 78, 0.08);
-  --shadow-md: 0 4px 12px rgba(14, 40, 78, 0.1);
-  --shadow-lg: 0 10px 25px rgba(14, 40, 78, 0.16);
+
+  /* === Фирменные синие и бирюзовые акценты OVB === */
+  --ovb-navy: #025AB2;              /* Главный синий OVB (Topbar, H2, первичные кнопки, активные бордюры) */
+  --ovb-navy-hover: #024B96;        /* Ховер первичных кнопок (#025AB2 darkened) */
+  --ovb-navy-dark: #003D6B;         /* Глубокий корпоративный navy (баннер /portal/home) */
+  --ovb-navy-text: #0E284E;         /* Темно-синий цвет заголовков и иконок (.text-blue) */
+  --ovb-teal: #2BBADA;              /* Фирменный бирюзовый CTA OVB (Kalendár, Ponuka webinárov) */
+  --ovb-teal-hover: #24A5C2;        /* Ховер бирюзовых CTA (hover:bg-[#2BBADA]/80) */
+  --ovb-teal-light: #E8F8FA;        /* Мягкий бирюзовый фон для бейджей */
+  --ovb-blue-light: #1FB6FF;        /* Светло-голубой акцент (.text-blue-light) */
+  --ovb-blue-mid: #2886F3;          /* Градиентный синий (.bg-gradient-blue) */
+  --ovb-sidebar-grad: linear-gradient(135deg, #2CBADA 0%, #276BBD 100%); /* Активный градиент бокового меню OVB */
+
+  /* === Темная боковая панель OVB (#262626 / #1C1C1C) === */
+  --ovb-sidebar-bg: #262626;        /* Поверхность левого меню портала */
+  --ovb-sidebar-deep: #1C1C1C;      /* Шапка и ховер пунктов левого меню */
+  --ovb-sidebar-text: #B8B8B8;      /* Текст неактивных пунктов меню */
+  --ovb-sidebar-muted: #808080;     /* Вторичные подписи в боковом меню */
+  --ovb-sidebar-divider: rgba(255, 255, 255, 0.08); /* Разделители пунктов меню */
+
+  /* === Поверхности и полотно ("Snow & Slate") === */
+  --bg-main: #F0F2F6;               /* Основной фон страниц портала (bg-dark-snow) */
+  --bg-card: #FFFFFF;               /* Поверхность карточек */
+  --bg-card-tray: #F7F7F7;          /* Нижний трей карточек OVB (/portal/home) */
+  --ovb-silver: #E1E3E6;            /* Подшапка OVB (Sub-header bar) */
+  --ovb-silver-border: #CCCCCC;     /* Нижняя граница подшапки OVB */
+  --ovb-card-hover: #F0F5FA;        /* Мягкий голубой ховер карточек и строк (/portal/home) */
+  --ovb-snow-hover: #F9FAFC;        /* Светлый фон шапок и четных строк (bg-snow) */
+  --ovb-btn-idle: #EBEBEB;          /* Фон вторичных кнопок карточек OVB ("Zobraziť všetky") */
+
+  /* === Границы и разделители === */
+  --ovb-card-border: #829CBF;       /* Стальной сине-серый бордюр карточек OVB */
+  --border-color: #D6D9E2;          /* Разделители инпутов и секций (border-extra-dark-snow) */
+  --border-soft: #E5E9F0;           /* Внутренние разделители таблиц */
+  --border-snow: #F0F2F6;           /* Тонкие разделители строк (border-dark-snow) */
+
+  /* === Цвета текста === */
+  --text-strong: #000000;           /* Контрастные заголовки документов */
+  --text-main: #0E284E;             /* Основной цвет текста */
+  --text-slate: #3E4857;            /* Вторичный текст (.text-slate) */
+  --text-muted: #8792A4;            /* Приглушенные метаданные (.text-silver) */
+
+  /* === Семантические цвета === */
+  --ovb-red: #EB3841;               /* Официальный красный OVB (плашки дат, уведомления) */
+  --danger: #EF4444;                /* Граница ошибок */
+  --danger-text: #DC2626;           /* Текст ошибок */
+  --ovb-green: #22C55E;             /* Официальный положительный зеленый портала */
+  --ovb-green-badge: #16A34A;       /* Зеленый выполненных квот X/Y и активных бейджей */
+  --ovb-green-soft: #F0FDF4;        /* Светло-зеленый фон выполненных критериев */
+  --ovb-orange: #EA580C;            /* Оранжевый акцент (прямая ветка Priama и карточки) */
+  --warning: #F59E0B;               /* Янтарный статус ожидания */
+
+  /* === Скругления и плоская иерархия теней OVB === */
+  --radius-xl: 10px;                /* Карточки Disk / модальные окна (rounded-[10px]) */
+  --radius-lg: 8px;                 /* Карточки Home / блоки (rounded-lg) */
+  --radius-md: 6px;                 /* Кнопки и поля ввода (rounded-[6px]) */
+  --radius-sm: 4px;                 /* Верхние плашки (Kalendár) и компактные бейджи */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.10), 0 1px 2px -1px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 10px 24px rgba(14, 40, 78, 0.16);
+  --shadow-ovb-sidebar: inset -7px 0 7px -7px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -53,24 +83,62 @@
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   background-color: var(--bg-main);
   color: var(--text-main);
-  line-height: 1.45;
-  padding-bottom: 80px;
+  font-size: 14px;
+  line-height: 1.5;
+  padding-bottom: 84px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--ovb-navy);
+  outline-offset: 2px;
+}
+
+.app-topbar :focus-visible,
+.nav-tabs-bar :focus-visible {
+  outline-color: #ffffff;
+}
+
+/* Табличные цифры для всех показателей EH / EUR / квот */
+.stat-pill,
+.turnover-metric-box .val,
+.board-plan-badge,
+.board-table,
+.interest-table,
+.matrix-table,
+.worker-node-stats,
+.score-pill,
+.weight-input,
+.tab-badge {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ==========================================================================
-   TIER 1: ВЕРХНИЙ БАР В СТИЛЕ ПОРТАЛА OVB (44px, #025AB2)
+   TIER 1: ВЕРХНИЙ БАР В СТИЛЕ ПОРТАЛА OVB (44px, плоский #025AB2)
    ========================================================================== */
 .app-topbar {
   background: var(--ovb-navy);
-  color: #fff;
-  height: 44px;
+  color: #ffffff;
+  min-height: 44px;
+  height: auto;
   position: sticky;
   top: 0;
   z-index: 120;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
 }
@@ -78,8 +146,9 @@ body {
 .topbar-inner {
   max-width: 1480px;
   width: 100%;
+  min-height: 44px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 4px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -89,49 +158,50 @@ body {
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  min-width: 0;
 }
 
-/* Фирменный логотип OVB с 3 столбиками и надписью analiz */
+/* Фирменный логотип OVB (3 восходящих столбика со скошенным верхом) */
 .ovb-logo-mark {
-  background: #ffffff;
+  background: transparent;
   color: var(--ovb-navy);
   font-weight: 900;
-  font-size: 14.5px;
+  font-size: 16px;
   letter-spacing: 0.4px;
-  padding: 4px 10px;
-  border-radius: 4px;
-  display: flex;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
   align-items: center;
   gap: 7px;
   line-height: 1;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
   user-select: none;
 }
 
 .ovb-logo-bars {
   display: flex;
   align-items: flex-end;
-  gap: 2px;
+  gap: 2.5px;
 }
 
 .ovb-logo-bars span {
   display: block;
-  width: 3.5px;
+  width: 4px;
   background: var(--ovb-navy);
-  border-radius: 1px;
+  border-radius: 0.5px;
+  clip-path: polygon(0 18%, 100% 0%, 100% 100%, 0 100%);
 }
 
-.ovb-logo-bars span:nth-child(1) { height: 5px; }
-.ovb-logo-bars span:nth-child(2) { height: 8px; }
-.ovb-logo-bars span:nth-child(3) { height: 12px; }
+.ovb-logo-bars span:nth-child(1) { height: 7px; }
+.ovb-logo-bars span:nth-child(2) { height: 11px; }
+.ovb-logo-bars span:nth-child(3) { height: 16px; }
 
 .ovb-logo-title {
   display: flex;
   align-items: baseline;
   gap: 5px;
   font-weight: 900;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--ovb-navy);
 }
 
@@ -139,72 +209,98 @@ body {
   text-transform: uppercase;
   color: var(--ovb-navy);
   font-weight: 900;
+  letter-spacing: 0.6px;
 }
 
 .ovb-logo-sub {
-  font-weight: 900;
-  color: var(--ovb-navy);
+  font-weight: 400;
+  color: var(--text-slate);
   text-transform: lowercase;
-  letter-spacing: -0.2px;
-  font-size: 14.5px;
+  letter-spacing: 0;
+  font-size: 13.5px;
+}
+
+/* В синей шапке — чистый белый фирменный знак OVB прямо на #025AB2 */
+.app-topbar .ovb-logo-mark {
+  background: transparent;
+  color: #ffffff;
+  box-shadow: none;
+  padding: 2px 4px;
+}
+
+.app-topbar .ovb-logo-bars span {
+  background: #ffffff;
+}
+
+.app-topbar .ovb-logo-title,
+.app-topbar .ovb-logo-ovb {
+  color: #ffffff;
+}
+
+.app-topbar .ovb-logo-sub {
+  color: rgba(255, 255, 255, 0.86);
 }
 
 .topbar-date {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
   white-space: nowrap;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.1px;
 }
 
 /* Бейдж BETA TEST на английском после даты */
 .topbar-beta-badge {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.14);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  padding: 2px 7px;
-  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+/* Прямоугольная бирюзовая кнопка в стиле Kalendár на disk.ovb.sk */
 .topbar-action-pill {
   background: var(--ovb-teal);
-  color: #fff;
-  font-size: 11.5px;
+  color: #ffffff;
+  font-size: 12px;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 999px;
+  padding: 4px 11px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: none;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  transition: all 0.15s ease;
+  gap: 5px;
+  line-height: 1.25;
+  white-space: nowrap;
+  transition: background 0.15s ease;
 }
 
 .topbar-action-pill:hover {
   background: var(--ovb-teal-hover);
-  color: #fff;
+  color: #ffffff;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* Переключатель языков интерфейса RU / SK / UA */
 .lang-switcher {
   display: inline-flex;
   align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: var(--radius-sm);
   padding: 2px;
   gap: 2px;
 }
@@ -212,47 +308,46 @@ body {
 .lang-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 3px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1.2;
+  transition: background 0.15s ease, color 0.15s ease;
+  line-height: 1.25;
 }
 
 .lang-btn:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .lang-btn.active {
   background: #ffffff;
   color: var(--ovb-navy);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Кнопка чата / отзывов в верхнем правом углу */
+/* Кнопка чата / отзывов в стиле Kalendár (#2BBADA, 4px radius) */
 .topbar-chat-btn {
   background: var(--ovb-teal);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 6px;
-  padding: 4px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 4px 11px;
   font-size: 12px;
   font-weight: 700;
+  line-height: 1.25;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease;
   white-space: nowrap;
 }
 
 .topbar-chat-btn:hover {
   background: var(--ovb-teal-hover);
-  box-shadow: 0 2px 6px rgba(43, 186, 218, 0.35);
 }
 
 .feedback-count-badge {
@@ -269,9 +364,9 @@ body {
 
 /* Стили комментариев чата / отзывов */
 .feedback-comment-card {
-  background: #f8fafc;
-  border: 1px solid var(--ovb-card-border);
-  border-radius: 6px;
+  background: var(--ovb-snow-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
   padding: 12px 14px;
   margin-bottom: 10px;
   display: flex;
@@ -300,7 +395,7 @@ body {
   background: var(--ovb-navy);
   color: #ffffff;
   font-size: 9.5px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 1px 5px;
   border-radius: 3px;
 }
@@ -312,8 +407,8 @@ body {
 
 .feedback-body-text {
   font-size: 13px;
-  color: var(--ovb-navy-text);
-  line-height: 1.4;
+  color: var(--text-slate);
+  line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -322,25 +417,25 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.16);
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 12px;
   white-space: nowrap;
 }
 
 /* ==========================================================================
-   TIER 2: ПОДШАПКА В СТИЛЕ ПОРТАЛА OVB (~58px, #E1E3E6, бордер #CCCCCC)
+   TIER 2: ПОДШАПКА В СТИЛЕ ПОРТАЛА OVB (#E1E3E6, плоский бордер #CCCCCC)
    ========================================================================== */
 .app-subheader {
   background: var(--ovb-silver);
   border-bottom: 1px solid var(--ovb-silver-border);
-  padding: 10px 16px;
+  padding: 11px 16px;
   position: sticky;
   top: 44px;
   z-index: 110;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
 }
 
 .subheader-inner {
@@ -360,17 +455,20 @@ body {
   flex-wrap: wrap;
 }
 
+/* Аутентичный легкий H1 подшапки OVB ("Úvodná stránka": 18px, weight 300) */
 .brand-title h1 {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--ovb-navy-text);
-  line-height: 1.2;
+  font-size: 18px;
+  font-weight: 300;
+  color: var(--text-slate);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .brand-title p {
   font-size: 11.5px;
-  color: var(--text-slate);
-  margin-top: 1px;
+  font-weight: 400;
+  color: #636D7E;
+  margin-top: 2px;
 }
 
 .header-stats {
@@ -382,16 +480,16 @@ body {
 
 .stat-pill {
   background: #ffffff;
-  border: 1px solid var(--ovb-card-border);
+  border: 1px solid var(--ovb-silver-border);
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
-  color: var(--ovb-navy-text);
+  color: var(--text-slate);
   display: flex;
   align-items: center;
   gap: 5px;
   font-weight: 500;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
 }
 
 .stat-pill strong {
@@ -409,9 +507,9 @@ body {
 .btn-ovb-white {
   background: #ffffff;
   border: 1px solid var(--ovb-card-border);
-  color: var(--ovb-navy);
+  color: var(--ovb-navy-text);
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .btn-ovb-white:hover {
@@ -421,13 +519,14 @@ body {
 }
 
 /* ==========================================================================
-   ВЕРТИКАЛЬНАЯ БОКОВАЯ НАВИГАЦИЯ (ВЫЕЗЖАЮЩЕЕ МЕНЮ СЛЕВА + КРУГЛАЯ КНОПКА)
+   ВЕРТИКАЛЬНАЯ БОКОВАЯ НАВИГАЦИЯ (ОФИЦИАЛЬНЫЙ ТЕМНЫЙ САЙДБАР OVB #262626)
+   Выдвигается слева по круглой кнопке с 3 полосками в нижнем левом углу
    ========================================================================== */
 .side-nav-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(14, 40, 78, 0.36);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(1.5px);
   z-index: 140;
   opacity: 0;
   visibility: hidden;
@@ -446,11 +545,11 @@ body {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 300px;
+  width: 280px;
   max-width: 86vw;
-  background: #ffffff;
-  border-right: 1px solid var(--ovb-card-border);
-  box-shadow: 6px 0 28px rgba(14, 40, 78, 0.22);
+  background: var(--ovb-sidebar-bg);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--shadow-ovb-sidebar), 10px 0 30px rgba(0, 0, 0, 0.36);
   z-index: 150;
   display: flex;
   flex-direction: column;
@@ -464,63 +563,92 @@ body {
   visibility: visible;
 }
 
+.nav-tabs-bar::after {
+  content: 'OVB Allfinanz Slovensko';
+  display: block;
+  padding: 14px 16px 20px 88px;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.20);
+  border-top: 1px solid var(--ovb-sidebar-divider);
+  background: var(--ovb-sidebar-bg);
+  pointer-events: none;
+  user-select: none;
+}
+
 .side-nav-header {
   height: 44px;
   min-height: 44px;
-  background: var(--ovb-navy);
+  background: var(--ovb-sidebar-deep);
   color: #ffffff;
-  padding: 0 14px 0 18px;
+  padding: 0 12px 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom: 1px solid var(--ovb-sidebar-divider);
 }
 
 .side-nav-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.25px;
+  color: #ffffff;
 }
 
 .side-nav-close-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: var(--ovb-sidebar-bg);
+  color: #b0b0b0;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .side-nav-close-btn:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 
 .nav-tabs-inner {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px 12px 96px 12px;
+  gap: 4px;
+  padding: 10px 10px 24px 10px;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.20) transparent;
+}
+
+.nav-tabs-inner::-webkit-scrollbar {
+  width: 5px;
+}
+
+.nav-tabs-inner::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.20);
+  border-radius: 999px;
 }
 
 .tab-btn {
   width: 100%;
   border: 1px solid transparent;
+  border-bottom-color: var(--ovb-sidebar-divider);
   background: transparent;
-  color: var(--text-slate);
+  color: var(--ovb-sidebar-text);
   font-weight: 600;
-  font-size: 13.5px;
-  padding: 11px 14px;
-  border-radius: 8px;
+  font-size: 13px;
+  padding: 11px 12px;
+  border-radius: 5px;
   cursor: pointer;
   white-space: normal;
   text-align: left;
@@ -528,38 +656,43 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  transition: all 0.15s ease;
-  line-height: 1.3;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  line-height: 1.35;
 }
 
 .tab-btn:hover {
-  background: var(--ovb-card-hover);
-  color: var(--ovb-navy);
-  border-color: rgba(130, 156, 191, 0.45);
+  background: var(--ovb-sidebar-deep);
+  color: #ffffff;
+  border-color: transparent;
 }
 
 .tab-btn.active {
-  background: var(--ovb-navy);
+  background: var(--ovb-sidebar-grad);
   color: #ffffff;
-  box-shadow: 0 3px 10px rgba(2, 90, 178, 0.28);
+  font-weight: 700;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(39, 107, 189, 0.35);
 }
 
 .tab-badge {
-  background: var(--ovb-teal);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
   padding: 2px 8px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
+  line-height: 1.2;
 }
 
 .tab-btn:not(.active) .tab-badge {
-  background: var(--ovb-silver);
-  color: var(--ovb-navy-text);
+  background: var(--ovb-sidebar-deep);
+  color: #d4d4d4;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* Круглая кнопка меню (просто три полоски) в нижнем левом углу */
+/* Круглая кнопка меню (просто три горизонтальные полоски) в нижнем левом углу */
 .side-nav-fab {
   position: fixed;
   left: 22px;
@@ -569,25 +702,31 @@ body {
   border-radius: 50%;
   background: var(--ovb-navy);
   color: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.92);
-  box-shadow: 0 6px 20px rgba(2, 90, 178, 0.4), 0 2px 6px rgba(14, 40, 78, 0.2);
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 90, 178, 0.38), 0 1px 3px rgba(0, 0, 0, 0.16);
   cursor: pointer;
   z-index: 160;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .side-nav-fab:hover {
-  background: var(--ovb-navy-dark);
-  transform: scale(1.06);
-  box-shadow: 0 8px 24px rgba(2, 90, 178, 0.48), 0 3px 8px rgba(14, 40, 78, 0.24);
+  background: var(--ovb-navy-hover);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(2, 90, 178, 0.44), 0 2px 6px rgba(0, 0, 0, 0.20);
 }
 
 .side-nav-fab:active {
   transform: scale(0.96);
+}
+
+.side-nav-fab.open {
+  background: var(--ovb-sidebar-deep);
+  border-color: #2CBADA;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.44);
 }
 
 .side-nav-fab-lines {
@@ -637,11 +776,11 @@ body {
 }
 
 /* ==========================================================================
-   КНОПКИ И ЭЛЕМЕНТЫ УПРАВЛЕНИЯ
+   КНОПКИ И ЭЛЕМЕНТЫ УПРАВЛЕНИЯ (стиль disk.ovb.sk)
    ========================================================================== */
 .btn {
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   padding: 7px 13px;
   font-size: 12.5px;
   font-weight: 600;
@@ -650,48 +789,53 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   text-decoration: none;
+  line-height: 1.3;
 }
 
 .btn-primary {
   background: var(--ovb-navy);
-  color: #fff;
+  color: #ffffff;
   border-color: var(--ovb-navy);
 }
 
 .btn-primary:hover {
-  background: var(--ovb-navy-dark);
-  border-color: var(--ovb-navy-dark);
+  background: var(--ovb-navy-hover);
+  border-color: var(--ovb-navy-hover);
 }
 
 .btn-teal {
   background: var(--ovb-teal);
-  color: #fff;
+  color: #ffffff;
   border-color: var(--ovb-teal);
 }
 
 .btn-teal:hover {
   background: var(--ovb-teal-hover);
+  border-color: var(--ovb-teal-hover);
 }
 
 .btn-orange {
-  background: #ea580c;
-  color: #fff;
+  background: var(--ovb-orange);
+  color: #ffffff;
+  border-color: var(--ovb-orange);
 }
 
 .btn-orange:hover {
-  background: #c2410c;
+  background: #C2410C;
+  border-color: #C2410C;
 }
 
 .btn-green {
-  background: var(--ovb-green);
-  color: #fff;
-  border-color: var(--ovb-green);
+  background: var(--ovb-green-badge);
+  color: #ffffff;
+  border-color: var(--ovb-green-badge);
 }
 
 .btn-green:hover {
-  background: #16a34a;
+  background: #15803D;
+  border-color: #15803D;
 }
 
 .btn-outline {
@@ -703,37 +847,80 @@ body {
 .btn-outline:hover {
   background: var(--ovb-card-hover);
   border-color: var(--ovb-navy);
+  color: var(--ovb-navy-hover);
+}
+
+.btn-outline.is-active-view {
+  background: var(--ovb-navy);
+  border-color: var(--ovb-navy);
+  color: #ffffff;
+}
+
+.btn-outline.is-active-view:hover {
+  background: var(--ovb-navy-hover);
+  border-color: var(--ovb-navy-hover);
+  color: #ffffff;
 }
 
 .btn-ghost-white {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .btn-ghost-white:hover {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .btn-danger {
-  background: #fee2e2;
-  color: var(--danger);
-  border-color: #fecaca;
+  background: #FEF2F2;
+  color: var(--danger-text);
+  border-color: #FCA5A5;
 }
 
 .btn-danger:hover {
-  background: var(--danger);
-  color: #fff;
+  background: var(--ovb-red);
+  border-color: var(--ovb-red);
+  color: #ffffff;
 }
 
 .btn-sm {
   padding: 5px 10px;
   font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Бейдж личного профиля (standalone ⭐ на карточках и баннерах) */
+.me-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FDE047;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  line-height: 1.25;
+  white-space: nowrap;
 }
 
 /* Панель инструментов секции */
 .section-toolbar {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
   padding: 12px 16px;
@@ -760,6 +947,17 @@ body {
   flex-wrap: wrap;
 }
 
+.whoami-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ovb-card-hover);
+  border: 1px solid var(--ovb-card-border);
+  padding: 5px 11px;
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
 .input-field,
 .select-field,
 .textarea-field {
@@ -768,28 +966,47 @@ body {
   padding: 7px 11px;
   font-size: 13.5px;
   color: var(--ovb-navy-text);
-  background: #fff;
+  background: #ffffff;
   outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-field::placeholder,
+.textarea-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:hover,
+.select-field:hover,
+.textarea-field:hover {
+  border-color: var(--ovb-card-border);
 }
 
 .input-field:focus,
 .select-field:focus,
 .textarea-field:focus {
   border-color: var(--ovb-navy);
-  box-shadow: 0 0 0 3px rgba(2, 90, 178, 0.15);
+  box-shadow: 0 0 0 3px rgba(2, 90, 178, 0.14);
+}
+
+.input-field:disabled,
+.select-field:disabled,
+.textarea-field:disabled {
+  background: var(--bg-main);
+  color: var(--text-muted);
+  border-color: var(--border-color);
 }
 
 /* ==========================================================================
    ВКЛАДКА 1: ВЕРТИКАЛЬ РАБОТНИКОВ И АНАЛИЗ ПОВЫШЕНИЯ
    ========================================================================== */
 .pyramid-focus-banner {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-top: 3px solid var(--ovb-navy);
   border-radius: var(--radius-lg);
   padding: 14px 18px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -814,7 +1031,7 @@ body {
 .legend-line-orange {
   width: 20px;
   height: 4px;
-  background: #ea580c;
+  background: var(--ovb-orange);
   border-radius: 2px;
 }
 
@@ -826,22 +1043,23 @@ body {
 }
 
 .legend-badge-up {
-  background: var(--ovb-green);
-  color: #052e16;
-  font-weight: 800;
+  background: #DCFCE7;
+  color: #166534;
+  font-weight: 700;
   font-size: 10.5px;
   padding: 1px 6px;
-  border-radius: 4px;
-  border: 1px solid #16a34a;
+  border-radius: var(--radius-sm);
+  border: 1px solid #86EFAC;
+  white-space: nowrap;
 }
 
 /* Блок анализатора карьеры (Plán kariéry OVB) */
 .career-analyzer-card {
-  background: #ffffff;
-  border: 1px solid var(--ovb-card-border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
 }
 
 .career-req-grid {
@@ -851,10 +1069,14 @@ body {
   margin-top: 10px;
 }
 
+.career-req-grid > * {
+  min-width: 0;
+}
+
 .career-req-box {
-  background: #f8fafc;
+  background: var(--ovb-snow-hover);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -863,26 +1085,28 @@ body {
 
 .career-req-box.done {
   background: var(--ovb-green-soft);
-  border-color: #86efac;
+  border-color: #86EFAC;
 }
 
 /* Полотно вертикали работников */
 .pyramid-canvas-wrapper {
   background-color: #ffffff;
   background-image:
-    linear-gradient(to right, rgba(130, 156, 191, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(130, 156, 191, 0.15) 1px, transparent 1px);
+    linear-gradient(to right, rgba(130, 156, 191, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(130, 156, 191, 0.12) 1px, transparent 1px);
   background-size: 20px 20px;
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
   padding: 18px 16px 28px;
   overflow: auto;
   height: 640px;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-sm);
   position: relative;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ovb-card-border) var(--bg-main);
 }
 
 .pyramid-canvas-wrapper.is-dragging {
@@ -904,11 +1128,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid var(--ovb-card-border);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
-  padding: 4px 10px;
-  box-shadow: var(--shadow-sm);
+  padding: 4px 11px;
+  box-shadow: var(--shadow-md);
   margin-bottom: 10px;
   backdrop-filter: blur(4px);
 }
@@ -925,12 +1149,12 @@ body {
 }
 
 .notebook-handwriting {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ovb-navy);
-  background: rgba(255, 255, 255, 0.9);
+  background: #ffffff;
   padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--ovb-card-border);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
 }
 
 /* CSS-дерево вертикали работников */
@@ -976,11 +1200,11 @@ body {
 
 .org-tree > ul > li > ul > li::before,
 .org-tree > ul > li > ul > li::after {
-  border-color: #ea580c;
+  border-color: var(--ovb-orange);
 }
 
 .org-tree > ul > li > ul::before {
-  border-left-color: #ea580c !important;
+  border-left-color: var(--ovb-orange) !important;
 }
 
 .org-tree li:only-child::after,
@@ -1003,7 +1227,7 @@ body {
 }
 
 .org-tree > ul > li > ul > li:last-child::before {
-  border-right-color: #ea580c;
+  border-right-color: var(--ovb-orange);
 }
 
 .org-tree li:first-child::after {
@@ -1024,40 +1248,46 @@ body {
 .worker-node-card {
   display: inline-block;
   background: #ffffff;
-  border: 1.5px solid var(--ovb-card-border);
-  border-radius: 6px;
-  padding: 6px 8px;
-  min-width: 122px;
-  max-width: 154px;
+  border: 1px solid var(--ovb-card-border);
+  border-radius: var(--radius-md);
+  padding: 7px 8px;
+  min-width: 126px;
+  max-width: 158px;
   text-align: left;
   position: relative;
-  box-shadow: 0 1px 4px rgba(14, 40, 78, 0.08);
-  transition: all 0.12s ease;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .worker-node-card:hover {
   transform: translateY(-2px);
   background: var(--ovb-card-hover);
   border-color: var(--ovb-navy);
-  box-shadow: 0 4px 12px rgba(2, 90, 178, 0.16);
+  box-shadow: var(--shadow-md);
   z-index: 5;
 }
 
 .worker-node-card.is-root-node {
   border: 2px solid var(--ovb-navy);
-  background: #f8fafc;
-  min-width: 150px;
-  max-width: 180px;
+  background: var(--ovb-snow-hover);
+  min-width: 152px;
+  max-width: 184px;
 }
 
 .worker-node-card.is-me-node {
-  border: 2px solid #eab308;
-  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.25), 0 4px 12px rgba(0, 0, 0, 0.1);
-  background: #fefce8;
+  border: 2px solid #EAB308;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.22), var(--shadow-sm);
+  background: #FEFCE8;
 }
 
 .worker-node-card.line-priama {
-  border-color: #ea580c;
+  border-color: var(--ovb-orange);
+}
+
+.worker-node-card .me-badge {
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 /* Значок цели повышения над блоком (R II.↑, VR↑) */
@@ -1065,14 +1295,14 @@ body {
   position: absolute;
   top: -9px;
   left: 6px;
-  background: var(--ovb-green);
-  color: #052e16;
+  background: #DCFCE7;
+  color: #166534;
   font-weight: 800;
   font-size: 9.5px;
-  padding: 0px 5px;
+  padding: 0 5px;
   border-radius: 3px;
-  border: 1px solid #16a34a;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  border: 1px solid #86EFAC;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .worker-node-header {
@@ -1080,15 +1310,16 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  flex-wrap: wrap;
 }
 
 .worker-rank-tag {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 9.5px;
   padding: 1px 5px;
   border-radius: 3px;
-  color: #fff;
+  color: #ffffff;
   background: var(--ovb-navy);
   white-space: nowrap;
 }
@@ -1096,7 +1327,7 @@ body {
 .worker-name-title {
   font-weight: 700;
   font-size: 11.5px;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--ovb-navy-text);
   word-break: break-word;
   margin-bottom: 3px;
@@ -1104,40 +1335,41 @@ body {
 
 .worker-node-stats {
   font-size: 10px;
-  line-height: 1.25;
+  line-height: 1.3;
   color: var(--text-slate);
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  border-top: 1px dashed var(--border-color);
-  padding-top: 3px;
+  gap: 1.5px;
+  border-top: 1px solid var(--border-snow);
+  padding-top: 4px;
   margin-top: 2px;
 }
 
 .worker-node-actions {
   display: flex;
-  gap: 3px;
-  margin-top: 5px;
+  gap: 4px;
+  margin-top: 6px;
   flex-wrap: wrap;
 }
 
 .node-mini-btn {
   border: 1px solid var(--ovb-card-border);
   background: var(--ovb-btn-idle);
-  color: var(--ovb-navy);
+  color: var(--ovb-navy-text);
   font-size: 9.5px;
   font-weight: 600;
-  padding: 2px 4px;
-  border-radius: 3px;
+  padding: 3px 5px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   flex: 1;
   text-align: center;
   line-height: 1.15;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .node-mini-btn:hover {
   background: var(--ovb-navy);
-  color: #fff;
+  color: #ffffff;
   border-color: var(--ovb-navy);
 }
 
@@ -1149,7 +1381,7 @@ body {
 }
 
 .hierarchy-list-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid var(--ovb-card-border);
   border-left: 4px solid var(--ovb-navy);
   border-radius: var(--radius-md);
@@ -1159,18 +1391,25 @@ body {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.hierarchy-list-card:hover {
+  background: var(--ovb-card-hover);
+  border-color: var(--ovb-navy);
 }
 
 /* ==========================================================================
    ВКЛАДКА 2: ТАБЛИЦЫ КОНСУЛЬТАНТОВ И ОБОРОТ ВЕРТИКАЛИ EH
    ========================================================================== */
 .vertical-turnover-summary {
-  background: linear-gradient(135deg, var(--ovb-navy) 0%, var(--ovb-navy-dark) 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--ovb-navy-dark) 0%, var(--ovb-navy) 62%, #1976D2 100%);
+  color: #ffffff;
   border-radius: var(--radius-lg);
+  border-left: 4px solid var(--ovb-teal);
   padding: 16px 20px;
   margin-bottom: 18px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .turnover-metrics-grid {
@@ -1180,21 +1419,25 @@ body {
   margin-top: 12px;
 }
 
+.turnover-metrics-grid > * {
+  min-width: 0;
+}
+
 .turnover-metric-box {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: var(--radius-md);
   padding: 10px 14px;
 }
 
 .turnover-metric-box .label {
   font-size: 11.5px;
-  opacity: 0.9;
+  opacity: 0.90;
 }
 
 .turnover-metric-box .val {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   margin-top: 2px;
 }
@@ -1202,23 +1445,34 @@ body {
 .boards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 18px;
+  gap: 16px;
 }
 
-/* Карточка консультанта в стиле OVB Portal */
+.boards-grid > * {
+  min-width: 0;
+}
+
+/* Карточка консультанта в стиле карточек /portal/home */
 .consultant-board-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.consultant-board-card:hover {
+  border-color: var(--ovb-navy);
+  box-shadow: var(--shadow-md);
 }
 
 .board-card-header {
-  background: #f7f7f7;
-  border-bottom: 1px solid var(--ovb-card-border);
+  background: var(--ovb-snow-hover);
+  border-bottom: 1px solid var(--border-color);
   padding: 10px 14px;
   display: flex;
   align-items: center;
@@ -1243,15 +1497,16 @@ body {
   background: var(--ovb-teal-light);
   border: 1px solid var(--ovb-card-border);
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
 }
 
 .board-progress-strip {
-  padding: 6px 14px;
-  background: #fff;
-  border-bottom: 1px solid var(--border-color);
+  padding: 7px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-snow);
   font-size: 12px;
+  color: var(--text-slate);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1262,6 +1517,7 @@ body {
   flex: 1;
   height: 7px;
   background: var(--bg-main);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -1280,52 +1536,62 @@ body {
 
 .board-table th {
   background: var(--bg-main);
-  color: var(--ovb-navy-text);
+  color: var(--text-slate);
   font-weight: 700;
   text-align: left;
   padding: 7px 10px;
-  border-bottom: 1px solid var(--ovb-card-border);
-  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-soft);
   font-size: 11.5px;
+}
+
+.board-table th:last-child,
+.board-table td:last-child {
+  border-right: none;
 }
 
 .board-table td {
   padding: 7px 10px;
-  border-bottom: 1px solid var(--border-color);
-  border-right: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-snow);
+  border-right: 1px solid var(--border-snow);
   vertical-align: middle;
+  color: var(--ovb-navy-text);
 }
 
-.board-table tr:hover td {
+.board-table tbody tr:hover td {
   background: var(--ovb-card-hover);
 }
 
 .stav-check-btn {
   width: 24px;
   height: 24px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   border: 1.5px solid var(--ovb-card-border);
-  background: #fff;
+  background: #ffffff;
   cursor: pointer;
   font-weight: 900;
   color: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.stav-check-btn:hover {
+  border-color: var(--ovb-navy);
 }
 
 .stav-check-btn.done {
-  border-color: var(--ovb-green);
-  background: var(--ovb-green);
-  color: #fff;
+  border-color: var(--ovb-green-badge);
+  background: var(--ovb-green-badge);
+  color: #ffffff;
 }
 
 .board-card-footer {
   margin-top: auto;
   padding: 10px 14px;
-  background: #f7f7f7;
-  border-top: 1px solid var(--ovb-card-border);
+  background: var(--bg-card-tray);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1338,29 +1604,45 @@ body {
    ========================================================================== */
 .clients-workspace {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: 18px;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 16px;
   align-items: start;
 }
 
+.clients-workspace > * {
+  min-width: 0;
+}
+
 .clients-list-panel {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  min-width: 0;
   box-shadow: var(--shadow-sm);
+}
+
+.clients-list-header {
+  padding: 12px 15px;
+  background: var(--ovb-snow-hover);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--ovb-navy-text);
 }
 
 .clients-list-scroll {
   max-height: 740px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ovb-card-border) var(--bg-main);
 }
 
 .client-list-item {
   padding: 12px 14px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-snow);
   cursor: pointer;
-  transition: background 0.12s;
+  transition: background 0.12s ease;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -1389,9 +1671,9 @@ body {
 }
 
 .badge-potential {
-  background: #fef3c7;
-  color: #b45309;
-  border: 1px solid #fde68a;
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
   font-size: 10.5px;
   font-weight: 700;
   padding: 2px 7px;
@@ -1399,9 +1681,9 @@ body {
 }
 
 .badge-transferred {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: #DCFCE7;
+  color: #166534;
+  border: 1px solid #86EFAC;
   font-size: 10.5px;
   font-weight: 700;
   padding: 2px 7px;
@@ -1417,10 +1699,11 @@ body {
 }
 
 .client-detail-panel {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
   padding: 20px;
+  min-width: 0;
   box-shadow: var(--shadow-sm);
 }
 
@@ -1430,7 +1713,7 @@ body {
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--ovb-card-border);
+  border-bottom: 1px solid var(--border-color);
   flex-wrap: wrap;
 }
 
@@ -1439,27 +1722,34 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 12px;
   margin: 16px 0;
-  background: #f8fafc;
+  background: var(--ovb-snow-hover);
   padding: 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
+}
+
+.client-factors-grid > * {
+  min-width: 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .form-group label {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--ovb-navy-text);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-slate);
 }
 
 .interest-table-wrapper {
-  margin-top: 18px;
+  margin-top: 16px;
   overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
 }
 
 .interest-table {
@@ -1470,20 +1760,28 @@ body {
 
 .interest-table th {
   background: var(--ovb-navy);
-  color: #fff;
+  color: #ffffff;
   padding: 9px 12px;
   text-align: left;
   font-size: 12px;
   font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .interest-table td {
   padding: 9px 12px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-snow);
   vertical-align: middle;
 }
 
-.interest-table tr:hover td {
+.interest-table tbody tr:nth-child(even) td {
+  background: var(--ovb-snow-hover);
+}
+
+.interest-table tbody tr:hover td {
   background: var(--ovb-card-hover);
 }
 
@@ -1497,7 +1795,8 @@ body {
 .score-track {
   flex: 1;
   height: 8px;
-  background: var(--border-color);
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -1509,11 +1808,11 @@ body {
 }
 
 .score-high { background: var(--ovb-green); }
-.score-medium { background: #f59e0b; }
+.score-medium { background: var(--warning); }
 .score-low { background: var(--text-muted); }
 
 .score-pill {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 12px;
   min-width: 40px;
   text-align: right;
@@ -1524,32 +1823,39 @@ body {
   display: inline-block;
   font-size: 10.5px;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   margin: 2px 3px 2px 0;
   font-weight: 600;
 }
 
 .reason-chip.pos {
-  background: #dcfce7;
+  background: #DCFCE7;
   color: #166534;
 }
 
 .reason-chip.neg {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #FEE2E2;
+  color: #991B1B;
 }
 
 /* ==========================================================================
    ВКЛАДКА 4: НАСТРОЙКА ВЛИЯНИЯ ПЕРЕМЕННЫХ
    ========================================================================== */
 .batch-influence-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-top: 3px solid var(--ovb-navy);
   border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 20px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
   box-shadow: var(--shadow-sm);
+}
+
+.batch-influence-card h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ovb-navy);
+  letter-spacing: -0.01em;
 }
 
 .service-checkbox-grid {
@@ -1560,10 +1866,10 @@ body {
 }
 
 .service-check-label {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid var(--border-color);
   padding: 7px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-weight: 600;
   display: flex;
@@ -1571,6 +1877,7 @@ body {
   gap: 8px;
   cursor: pointer;
   color: var(--ovb-navy-text);
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .service-check-label:hover {
@@ -1579,7 +1886,7 @@ body {
 }
 
 .matrix-table-container {
-  background: #fff;
+  background: var(--bg-card);
   border: 1px solid var(--ovb-card-border);
   border-radius: var(--radius-lg);
   overflow-x: auto;
@@ -1594,12 +1901,14 @@ body {
 
 .matrix-table th {
   background: var(--ovb-navy);
-  color: #fff;
+  color: #ffffff;
   padding: 9px 8px;
   text-align: center;
   font-weight: 600;
   position: sticky;
   top: 0;
+  z-index: 2;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .matrix-table th:first-child {
@@ -1609,17 +1918,27 @@ body {
 
 .matrix-table td {
   padding: 6px;
-  border-bottom: 1px solid var(--border-color);
-  border-right: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-snow);
+  border-right: 1px solid var(--border-snow);
   text-align: center;
+}
+
+.matrix-table tbody tr:not(.matrix-group-row):nth-child(even) td {
+  background: var(--ovb-snow-hover);
+}
+
+.matrix-table tbody tr:not(.matrix-group-row):hover td {
+  background: var(--ovb-card-hover);
 }
 
 .matrix-group-row td {
   background: var(--ovb-silver);
-  font-weight: 800;
+  font-weight: 700;
   text-align: left !important;
   color: var(--ovb-navy-text);
   padding: 8px 12px;
+  border-top: 1px solid var(--ovb-silver-border);
+  border-bottom: 1px solid var(--ovb-silver-border);
 }
 
 .weight-input {
@@ -1627,21 +1946,96 @@ body {
   padding: 4px 6px;
   text-align: center;
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 12px;
+  color: var(--ovb-navy-text);
+  background: #ffffff;
+}
+
+.weight-input:focus {
+  border-color: var(--ovb-navy);
+  box-shadow: 0 0 0 2px rgba(2, 90, 178, 0.14);
+  outline: none;
 }
 
 .weight-input.val-pos {
-  background: #f0fdf4;
-  color: #15803d;
-  border-color: #86efac;
+  background: var(--ovb-green-soft);
+  color: #15803D;
+  border-color: #86EFAC;
 }
 
 .weight-input.val-neg {
-  background: #fef2f2;
-  color: #b91c1c;
-  border-color: #fca5a5;
+  background: #FEF2F2;
+  color: #B91C1C;
+  border-color: #FCA5A5;
+}
+
+/* ==========================================================================
+   ВКЛАДКА 5: СПРАВОЧНИК КАРЬЕРЫ И УСЛУГ OVB
+   ========================================================================== */
+.guide-career-card,
+.guide-catalog-card {
+  background: var(--bg-card);
+  border: 1px solid var(--ovb-card-border);
+  border-top: 3px solid var(--ovb-navy);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-career-card h3,
+.guide-catalog-card h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ovb-navy);
+  letter-spacing: -0.01em;
+}
+
+.guide-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.guide-info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--ovb-card-border);
+  border-top: 3px solid var(--ovb-navy);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-info-card.accent-teal {
+  border-top-color: var(--ovb-teal);
+}
+
+.guide-info-card.accent-orange {
+  border-top-color: var(--ovb-orange);
+}
+
+.guide-info-card h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ovb-navy);
+  margin-bottom: 8px;
+}
+
+.guide-service-tile {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  background: var(--ovb-snow-hover);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.guide-service-tile:hover {
+  background: var(--ovb-card-hover);
+  border-color: var(--ovb-card-border);
 }
 
 /* ==========================================================================
@@ -1650,7 +2044,7 @@ body {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(14, 40, 78, 0.6);
+  background: rgba(14, 40, 78, 0.52);
   display: none;
   align-items: center;
   justify-content: center;
@@ -1664,24 +2058,27 @@ body {
 }
 
 .modal-box {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid var(--ovb-card-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   width: 100%;
   max-width: 600px;
   max-height: 92vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
-  padding: 22px;
+  padding: 20px 22px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ovb-card-border) var(--bg-main);
 }
 
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   margin-bottom: 16px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--ovb-card-border);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-header h3 {
@@ -1691,59 +2088,26 @@ body {
 }
 
 /* ==========================================================================
-   МОБИЛЬНАЯ АДАПТАЦИЯ
-   ========================================================================== */
-@media (max-width: 960px) {
-  .clients-workspace {
-    grid-template-columns: 1fr;
-  }
-  .clients-list-scroll {
-    max-height: 320px;
-  }
-  .boards-grid {
-    grid-template-columns: 1fr;
-  }
-  .app-topbar {
-    height: auto;
-    padding: 8px 12px;
-  }
-  .topbar-inner {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .app-subheader {
-    top: auto;
-    position: static;
-  }
-  .side-nav-fab {
-    left: 16px;
-    bottom: 18px;
-    width: 50px;
-    height: 50px;
-  }
-}
-
-/* ==========================================================================
-   OVB ACCESS GATE & PENDING / LOGIN SCREENS
+   OVB ACCESS GATE & PENDING / LOGIN SCREENS (корпоративный стиль disk.ovb.sk)
    ========================================================================== */
 .ovb-access-gate-container {
   min-height: calc(100vh - 44px);
-  background: #F0F4F9;
+  background: var(--bg-main);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 30px 16px;
+  padding: 28px 16px;
   box-sizing: border-box;
 }
 
 .gate-card {
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 16px 40px -10px rgba(2, 90, 178, 0.18), 0 2px 6px rgba(0, 0, 0, 0.04);
-  border: 1px solid #CBD5E1;
-  max-width: 520px;
+  background: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 16px rgba(14, 40, 78, 0.10);
+  border: 1px solid var(--ovb-card-border);
+  max-width: 500px;
   width: 100%;
-  padding: 36px 32px;
+  padding: 32px 28px;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -1756,26 +2120,50 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 5px;
-  background: linear-gradient(90deg, #025AB2 0%, #2563EB 50%, #EB3841 100%);
+  height: 4px;
+  background: linear-gradient(90deg, var(--ovb-navy) 0%, var(--ovb-teal) 100%);
 }
 
-.gate-card-pending {
-  border-top-color: #f59e0b;
+.gate-card-pending::before {
+  background: linear-gradient(90deg, var(--warning) 0%, #FBBF24 100%);
+}
+
+.gate-card .ovb-logo-mark {
+  background: transparent;
+  box-shadow: none;
+  padding: 2px 0;
+  font-size: 20px;
+  gap: 9px;
+}
+
+.gate-card .ovb-logo-bars span {
+  width: 5px;
+}
+
+.gate-card .ovb-logo-bars span:nth-child(1) { height: 9px; }
+.gate-card .ovb-logo-bars span:nth-child(2) { height: 14px; }
+.gate-card .ovb-logo-bars span:nth-child(3) { height: 20px; }
+
+.gate-card .ovb-logo-title {
+  font-size: 20px;
+}
+
+.gate-card .ovb-logo-sub {
+  font-size: 16px;
 }
 
 .access-icon-wrapper {
-  width: 76px;
-  height: 76px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   margin: 0 auto 16px auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 38px;
+  font-size: 34px;
   background: #FEF3C7;
   border: 2px solid #FDE68A;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.18);
 }
 
 .pending-pulse {
@@ -1783,9 +2171,9 @@ body {
 }
 
 @keyframes pendingPulse {
-  0% { transform: scale(1); box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2); }
-  50% { transform: scale(1.04); box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35); }
-  100% { transform: scale(1); box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2); }
+  0% { transform: scale(1); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.18); }
+  50% { transform: scale(1.04); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.30); }
+  100% { transform: scale(1); box-shadow: 0 2px 10px rgba(245, 158, 11, 0.18); }
 }
 
 .badge-pending {
@@ -1806,48 +2194,49 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #F59E0B;
+  background: var(--warning);
   animation: pulseDot 1.5s infinite;
 }
 
 @keyframes pulseDot {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .gate-title {
-  font-size: 20px;
-  font-weight: 800;
-  color: #003780;
-  margin: 0 0 10px 0;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ovb-navy);
+  margin: 0 0 8px 0;
   line-height: 1.35;
+  letter-spacing: -0.01em;
 }
 
 .gate-subtitle {
-  font-size: 13.5px;
-  color: #64748B;
+  font-size: 13px;
+  color: var(--text-muted);
   margin: 0 0 18px 0;
   line-height: 1.5;
 }
 
 .gate-desc {
-  font-size: 14px;
-  color: #334155;
-  margin: 0 0 20px 0;
-  line-height: 1.6;
+  font-size: 13.5px;
+  color: var(--text-slate);
+  margin: 0 0 18px 0;
+  line-height: 1.55;
 }
 
 .highlight-email {
-  color: #025AB2;
+  color: var(--ovb-navy);
   font-weight: 700;
 }
 
 .gate-info-box {
-  background: #F8FAFC;
-  border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin: 18px 0;
+  background: var(--ovb-snow-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  margin: 16px 0;
   text-align: left;
 }
 
@@ -1856,7 +2245,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 7px 0;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--border-snow);
   font-size: 13px;
   gap: 12px;
 }
@@ -1866,12 +2255,12 @@ body {
 }
 
 .info-label {
-  color: #64748B;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
 .info-val {
-  color: #0F172A;
+  color: var(--ovb-navy-text);
   font-weight: 700;
   text-align: right;
   word-break: break-all;
@@ -1881,20 +2270,20 @@ body {
   background: #FEF3C7;
   color: #92400E;
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 11.5px;
   border: 1px solid #FDE68A;
 }
 
 .gate-notice-box {
-  background: #EFF6FF;
-  border: 1px solid #BFDBFE;
-  border-radius: 10px;
+  background: var(--ovb-card-hover);
+  border: 1px solid var(--ovb-card-border);
+  border-radius: var(--radius-lg);
   padding: 12px 14px;
   margin: 16px 0;
   font-size: 12.5px;
-  color: #1E40AF;
+  color: var(--ovb-navy-text);
   text-align: left;
   line-height: 1.5;
 }
@@ -1908,17 +2297,19 @@ body {
 
 .gate-footer-hint {
   font-size: 12px;
-  color: #64748B;
-  margin-top: 18px;
+  color: var(--text-muted);
+  margin-top: 16px;
   line-height: 1.5;
 }
 
+/* Сегментированный переключатель в стиле Produkt/Partner на disk.ovb.sk */
 .gate-tabs {
   display: flex;
   gap: 4px;
-  background: #F1F5F9;
-  padding: 4px;
-  border-radius: 10px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 3px;
+  border-radius: var(--radius-lg);
   margin: 0 0 18px 0;
 }
 
@@ -1927,18 +2318,22 @@ body {
   padding: 8px 6px;
   border: none;
   background: transparent;
-  border-radius: 7px;
+  border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 12.5px;
   cursor: pointer;
-  color: #64748B;
-  transition: all 0.2s ease;
+  color: var(--text-muted);
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gate-tab-btn:hover {
+  color: var(--text-slate);
 }
 
 .gate-tab-btn.active {
   background: #ffffff;
-  color: #003780;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  color: var(--ovb-navy);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ==========================================================================
@@ -1948,10 +2343,10 @@ body {
   position: sticky;
   top: 44px;
   z-index: 130;
-  background: linear-gradient(90deg, #003780 0%, #025AB2 60%, #0284c7 100%);
+  background: linear-gradient(90deg, var(--ovb-navy-dark) 0%, var(--ovb-navy) 60%, var(--ovb-teal) 100%);
   color: #ffffff;
-  border-bottom: 2px solid #38bdf8;
-  box-shadow: 0 6px 20px rgba(2, 90, 178, 0.35);
+  border-bottom: 2px solid var(--ovb-teal);
+  box-shadow: 0 4px 16px rgba(2, 90, 178, 0.30);
   padding: 10px 16px;
 }
 
@@ -1975,12 +2370,12 @@ body {
 }
 
 .assign-mode-pill {
-  background: #fde047;
-  color: #0f172a;
+  background: #FDE047;
+  color: var(--ovb-navy-text);
   font-weight: 800;
   font-size: 11px;
   padding: 3px 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   white-space: nowrap;
@@ -1996,26 +2391,26 @@ body {
 body.assign-mode-active .worker-node-card,
 body.assign-mode-active .hierarchy-list-card {
   cursor: pointer !important;
-  border: 2px dashed #0284c7 !important;
+  border: 2px dashed var(--ovb-teal) !important;
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 body.assign-mode-active .worker-node-card:hover,
 body.assign-mode-active .hierarchy-list-card:hover {
-  border: 2px solid #16a34a !important;
-  background: #f0fdf4 !important;
-  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25), 0 8px 20px rgba(22, 163, 74, 0.2) !important;
+  border: 2px solid var(--ovb-green-badge) !important;
+  background: var(--ovb-green-soft) !important;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.22), 0 6px 16px rgba(22, 163, 74, 0.18) !important;
   transform: translateY(-2px);
 }
 
 .assign-pick-btn {
   width: 100%;
-  background: #16a34a;
+  background: var(--ovb-green-badge);
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
@@ -2026,20 +2421,20 @@ body.assign-mode-active .hierarchy-list-card:hover {
 }
 
 .assign-pick-btn:hover {
-  background: #15803d;
+  background: #15803D;
 }
 
 .manager-role-badge {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #7dd3fc;
-  font-size: 10.5px;
-  font-weight: 800;
+  background: var(--ovb-teal-light);
+  color: var(--ovb-navy);
+  border: 1px solid var(--ovb-card-border);
+  font-size: 10px;
+  font-weight: 700;
   padding: 1px 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
 }
 
@@ -2047,16 +2442,154 @@ body.assign-mode-active .hierarchy-list-card:hover {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: #f3e8ff;
-  color: #6b21a8;
-  border: 1px solid #d8b4fe;
-  font-size: 10.5px;
+  background: #F3E8FF;
+  color: #6B21A8;
+  border: 1px solid #D8B4FE;
+  font-size: 10px;
   font-weight: 700;
   padding: 1px 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
 }
 
+/* ==========================================================================
+   МОБИЛЬНАЯ И ПЛАНШЕТНАЯ АДАПТАЦИЯ
+   ========================================================================== */
+@media (max-width: 1240px) {
+  .app-topbar {
+    padding: 4px 0;
+  }
+  .topbar-inner {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+  .app-subheader {
+    position: static;
+    top: auto;
+  }
+  .assign-mode-banner {
+    position: static;
+    top: auto;
+  }
+}
+
+@media (max-width: 960px) {
+  .clients-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .clients-list-scroll {
+    max-height: 320px;
+  }
+  .boards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-topbar {
+    height: auto;
+    min-height: 44px;
+    padding: 6px 0;
+  }
+  .topbar-inner {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .app-subheader {
+    top: auto;
+    position: static;
+  }
+  .brand-title h1 {
+    font-size: 15.5px;
+  }
+  .side-nav-fab {
+    left: 16px;
+    bottom: 18px;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-container {
+    margin: 12px auto;
+    padding: 0 10px;
+  }
+  .topbar-inner {
+    padding: 4px 10px;
+  }
+  .topbar-left {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .topbar-date {
+    font-size: 11px;
+  }
+  .section-toolbar {
+    padding: 10px 12px;
+  }
+  .toolbar-left,
+  .toolbar-right {
+    width: 100%;
+    min-width: 0;
+  }
+  .section-toolbar > div,
+  .section-toolbar .toolbar-left > div {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  .section-toolbar .select-field,
+  .section-toolbar .input-field,
+  #pyramidFocusSelect,
+  #boardLeaderSelect,
+  #boardFilterSelect,
+  #clientSearchInput {
+    min-width: 0 !important;
+    max-width: 100%;
+    width: 100%;
+  }
+  .client-detail-header > div,
+  .client-detail-header input.input-field {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100%;
+  }
+  .client-factors-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .client-detail-panel .input-field,
+  .client-detail-panel .select-field,
+  .client-detail-panel .textarea-field {
+    max-width: 100%;
+  }
+  .interest-table-wrapper {
+    max-width: 100%;
+  }
+  .batch-influence-card [style*="grid-template-columns"],
+  .guide-catalog-card [style*="grid-template-columns"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .modal-box {
+    padding: 16px;
+  }
+  .modal-box form [style*="grid-template-columns"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .modal-box .input-field,
+  .modal-box .select-field,
+  .modal-box .textarea-field {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .gate-card {
+    padding: 24px 18px;
+  }
+  .client-detail-panel {
+    padding: 14px;
+  }
+  .guide-info-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 
 </style>
 </head>
@@ -2175,17 +2708,17 @@ body.assign-mode-active .hierarchy-list-card:hover {
 
       <form id="gateAuthForm" onsubmit="handleGateAuthSubmit(event)">
         <div class="form-group" id="gateFullNameGroup" style="display: none; text-align: left; margin-bottom: 12px;">
-          <label class="form-label" id="gateFullNameLabel" style="font-weight: 700; font-size: 12.5px; color: #334155; margin-bottom: 4px; display: block;">👤 Ваше имя и фамилия:</label>
+          <label class="form-label" id="gateFullNameLabel" style="font-weight: 600; font-size: 12.5px; color: var(--text-slate); margin-bottom: 4px; display: block;">👤 Ваше имя и фамилия:</label>
           <input type="text" id="gate_auth_fullname" class="input-field" placeholder="Jan Novak / Иван Петров" style="width: 100%; box-sizing: border-box;" />
         </div>
 
         <div class="form-group" style="text-align: left; margin-bottom: 12px;">
-          <label class="form-label" id="gateEmailLabel" style="font-weight: 700; font-size: 12.5px; color: #334155; margin-bottom: 4px; display: block;">✉️ Корпоративная почта OVB:</label>
+          <label class="form-label" id="gateEmailLabel" style="font-weight: 600; font-size: 12.5px; color: var(--text-slate); margin-bottom: 4px; display: block;">✉️ Корпоративная почта OVB:</label>
           <input type="email" id="gate_auth_email" class="input-field" placeholder="meno.priezvisko@ovbmail.eu" required style="width: 100%; box-sizing: border-box;" />
         </div>
 
         <div class="form-group" id="gatePasswordGroup" style="text-align: left; margin-bottom: 12px;">
-          <label class="form-label" id="gatePasswordLabel" style="font-weight: 700; font-size: 12.5px; color: #334155; margin-bottom: 4px; display: block;">🔑 Пароль:</label>
+          <label class="form-label" id="gatePasswordLabel" style="font-weight: 600; font-size: 12.5px; color: var(--text-slate); margin-bottom: 4px; display: block;">🔑 Пароль:</label>
           <div style="position: relative;">
             <input type="password" id="gate_auth_password" class="input-field" placeholder="••••••••••••" style="width: 100%; box-sizing: border-box; padding-right: 40px;" />
             <button type="button" onclick="toggleGatePasswordVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; padding: 0;">👁️</button>
@@ -2194,7 +2727,7 @@ body.assign-mode-active .hierarchy-list-card:hover {
 
         <div id="gate_auth_status" style="margin: 10px 0;"></div>
 
-        <button type="submit" id="gateSubmitBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 10px; width: 100%; font-weight: 700; padding: 12px;">
+        <button type="submit" id="gateSubmitBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 10px;">
           Войти в систему
         </button>
       </form>
@@ -2314,14 +2847,14 @@ body.assign-mode-active .hierarchy-list-card:hover {
     <section class="tab-panel active" id="panel-pyramid">
       <div class="section-toolbar">
         <div class="toolbar-left">
-          <div id="mainWhoAmIContainer" style="display:flex; align-items:center; gap:8px; background:#F0F5FA; border:1px solid #829CBF; padding:6px 12px; border-radius:6px;">
+          <div id="mainWhoAmIContainer" class="whoami-chip">
           </div>
 
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label for="pyramidFocusSelect" id="lblFocusUnder" style="font-size:13px; font-weight:700; color:#334155; white-space:nowrap;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <label for="pyramidFocusSelect" id="lblFocusUnder" style="font-size:13px; font-weight:600; color:var(--text-slate); white-space:nowrap;">
               Показать вертикаль под:
             </label>
-            <select id="pyramidFocusSelect" class="select-field" style="min-width:250px; font-weight:700;"
+            <select id="pyramidFocusSelect" class="select-field" style="min-width:250px; font-weight:600;"
               onchange="focusPyramidOn(this.value)">
             </select>
           </div>
@@ -2418,7 +2951,7 @@ body.assign-mode-active .hierarchy-list-card:hover {
       <div class="clients-workspace">
         <!-- Левая колонка: список клиентов -->
         <div class="clients-list-panel">
-          <div id="clientsListHeaderTitle" style="padding:12px 15px; background:#f8fafc; border-bottom:1px solid #e2e8f0; font-weight:800; font-size:13px; color:#334155;">
+          <div id="clientsListHeaderTitle" class="clients-list-header">
             Список клиентов (ваши клиенты идут первыми)
           </div>
           <div class="clients-list-scroll" id="clientsListContainer"></div>
@@ -2436,10 +2969,10 @@ body.assign-mode-active .hierarchy-list-card:hover {
       <div class="batch-influence-card">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
           <div>
-            <h2 id="influenceBatchTitle" style="font-size:16.5px; color:var(--ovb-navy);">
+            <h2 id="influenceBatchTitle">
               ⚡ Быстрая настройка: задать меру влияния переменной на одну или сразу несколько услуг OVB
             </h2>
-            <p id="influenceBatchSubtitle" style="font-size:13px; color:#475569; margin-top:4px;">
+            <p id="influenceBatchSubtitle" style="font-size:13px; color:var(--text-slate); margin-top:4px;">
               Выберите параметр клиента (возраст, тип пребывания в Словакии, наличие/возраст детей, семейное положение), отметьте нужные услуги и укажите силу влияния (от -100% до +100%).
             </p>
           </div>
@@ -2479,7 +3012,7 @@ body.assign-mode-active .hierarchy-list-card:hover {
 
         <div style="margin-top:14px;">
           <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
-            <label id="lblBatchStep3" style="font-size:12.5px; font-weight:700; color:#334155;">
+            <label id="lblBatchStep3" style="font-size:12.5px; font-weight:600; color:var(--text-slate);">
               3. Отметьте одну или сразу несколько услуг OVB, на которые влияет этот фактор:
             </label>
             <div style="display:flex; gap:8px;">
@@ -2493,12 +3026,12 @@ body.assign-mode-active .hierarchy-list-card:hover {
 
       <div class="section-toolbar">
         <div class="toolbar-left">
-          <h3 id="influenceMatrixHeader" style="font-size:15px; color:var(--ovb-navy);">
+          <h3 id="influenceMatrixHeader" style="font-size:16px; font-weight:500; color:var(--ovb-navy);">
             🧮 Полная матрица мер влияния (можно менять любую ячейку вручную)
           </h3>
         </div>
         <div class="toolbar-right">
-          <span id="influenceMatrixHint" style="font-size:12px; color:#64748b;">
+          <span id="influenceMatrixHint" style="font-size:12px; color:var(--text-muted);">
             Положительные числа (зеленые) повышают интерес клиента к услуге, отрицательные (красные) — снижают.
           </span>
         </div>
@@ -2818,7 +3351,7 @@ body.assign-mode-active .hierarchy-list-card:hover {
           <span style="font-size:22px;">🔐</span>
           <div>
             <h3 style="margin:0; font-size:16px;">Вход в OVB Manager</h3>
-            <div style="font-size:11.5px; color:#64748b;">Только для сотрудников OVB Allfinanz</div>
+            <div style="font-size:11.5px; color:var(--text-muted);">Только для сотрудников OVB Allfinanz</div>
           </div>
         </div>
         <button class="btn btn-outline btn-sm" onclick="closeAuthModal()">✕</button>
@@ -2873,8 +3406,8 @@ body.assign-mode-active .hierarchy-list-card:hover {
           </button>
         </div>
 
-        <div style="border-top:1px solid #e2e8f0; padding-top:10px; margin-top:4px; font-size:12px; color:#64748b; text-align:center;">
-          Корпоративный почтовый сервер: <a href="https://mail.ovbmail.eu/webmail/" target="_blank" style="color:#0284c7; font-weight:700;">mail.ovbmail.eu/webmail</a>
+        <div style="border-top:1px solid var(--border-color); padding-top:10px; margin-top:4px; font-size:12px; color:var(--text-muted); text-align:center;">
+          Корпоративный почтовый сервер: <a href="https://mail.ovbmail.eu/webmail/" target="_blank" style="color:var(--ovb-navy); font-weight:700;">mail.ovbmail.eu/webmail</a>
         </div>
       </form>
     </div>
@@ -2888,7 +3421,7 @@ body.assign-mode-active .hierarchy-list-card:hover {
           <span style="font-size:22px;">🔔</span>
           <div>
             <h3 style="margin:0; font-size:16px;">Заявки на регистрацию сотрудников</h3>
-            <div style="font-size:11.5px; color:#64748b;">Сверьте имя и фамилию и выберите карточку сотрудника в вертикали OVB</div>
+            <div style="font-size:11.5px; color:var(--text-muted);">Сверьте имя и фамилию и выберите карточку сотрудника в вертикали OVB</div>
           </div>
         </div>
         <button class="btn btn-outline btn-sm" onclick="closeApprovalsModal()">✕</button>
@@ -7011,6 +7544,12 @@ function renderPyramidTab() {
     }
   }
 
+  // Подсветка активной кнопки режима отображения (схема / список)
+  const btnViewTree = document.getElementById('btnViewTree');
+  const btnViewList = document.getElementById('btnViewList');
+  if (btnViewTree) btnViewTree.classList.toggle('is-active-view', state.pyramidViewMode === 'tree');
+  if (btnViewList) btnViewList.classList.toggle('is-active-view', state.pyramidViewMode === 'list');
+
   // Кнопка "Добавить человека" на тулбаре: добавляем под текущего фокуса (если есть право) или под себя
   const btnAddPyramid = document.getElementById('btnAddWorkerPyramid');
   if (btnAddPyramid) {
@@ -7675,7 +8214,7 @@ function renderBoardsTab() {
                           return `
                             <tr>
                               <td>
-                                <a href="javascript:void(0)" onclick="openClientInTab('${client.id}')" style="font-weight:700; color:#003057; text-decoration:none;">
+                                <a href="javascript:void(0)" onclick="openClientInTab('${client.id}')" style="font-weight:700; color:var(--ovb-navy); text-decoration:none;">
                                   ${escapeHtml(client.name)}
                                 </a>
                               </td>
@@ -7689,7 +8228,7 @@ function renderBoardsTab() {
                         return `
                           <tr>
                             <td>
-                              <a href="javascript:void(0)" onclick="openClientInTab('${client.id}')" style="font-weight:700; color:#003057; text-decoration:none;">
+                              <a href="javascript:void(0)" onclick="openClientInTab('${client.id}')" style="font-weight:700; color:var(--ovb-navy); text-decoration:none;">
                                 ${escapeHtml(client.name)}
                               </a>
                               ${client.isPotentialClient ? `<span title="${escapeAttr(t('client_potential_badge'))}" style="color:#d97706;">★</span>` : ''}
@@ -8444,8 +8983,8 @@ function renderGuideTab() {
 
   el.innerHTML = `
     <!-- ОФИЦИАЛЬНАЯ ТАБЛИЦА КАРЬЕРЫ Plán kariéry OVB - moja kariéra -->
-    <div style="background:#fff; border:2px solid var(--ovb-navy); border-radius:12px; padding:18px; margin-bottom:20px; overflow-x:auto;">
-      <h3 style="color:var(--ovb-navy); margin-bottom:10px; font-size:17px;">
+    <div class="guide-career-card">
+      <h3 style="margin-bottom:12px;">
         ${t('guide_career_title')}
       </h3>
       <table class="board-table" style="font-size:12.5px;">
@@ -8517,7 +9056,7 @@ function renderGuideTab() {
           </tr>
         </tbody>
       </table>
-      <div style="margin-top:8px; font-size:12px; color:#475569;">
+      <div style="margin-top:10px; font-size:12px; color:var(--text-slate);">
         <strong>${t('guide_substitution_rules')}</strong>
         2× R II. = 1× GST = 1× FE III = 1× FE IV &nbsp;|&nbsp;
         2× R I. = 1× VR = 1× FE = 1× FE I = 1× FE II &nbsp;|&nbsp;
@@ -8526,10 +9065,10 @@ function renderGuideTab() {
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px; margin-bottom:20px;">
-      <div style="background:#fff; border:1px solid #e2e8f0; border-top:4px solid var(--ovb-navy); border-radius:12px; padding:16px;">
-        <h3 style="color:var(--ovb-navy); margin-bottom:8px;">${t('guide_rule_title')}</h3>
-        <ul style="padding-left:18px; font-size:13.5px; display:flex; flex-direction:column; gap:6px;">
+    <div class="guide-info-grid">
+      <div class="guide-info-card">
+        <h3>${t('guide_rule_title')}</h3>
+        <ul style="padding-left:18px; font-size:13.5px; color:var(--text-slate); display:flex; flex-direction:column; gap:6px;">
           <li>${t('guide_rule_10')}</li>
           <li>${t('guide_rule_20')}</li>
           <li>${t('guide_rule_30')}</li>
@@ -8537,9 +9076,9 @@ function renderGuideTab() {
         </ul>
       </div>
 
-      <div style="background:#fff; border:1px solid #e2e8f0; border-top:4px solid var(--ovb-teal); border-radius:12px; padding:16px;">
-        <h3 style="color:var(--ovb-teal); margin-bottom:8px;">${t('guide_sectors_title')}</h3>
-        <ol style="padding-left:18px; font-size:13.5px; display:flex; flex-direction:column; gap:5px;">
+      <div class="guide-info-card accent-teal">
+        <h3 style="color:var(--ovb-teal-hover);">${t('guide_sectors_title')}</h3>
+        <ol style="padding-left:18px; font-size:13.5px; color:var(--text-slate); display:flex; flex-direction:column; gap:5px;">
           <li>${t('guide_sector_1')}</li>
           <li>${t('guide_sector_2')}</li>
           <li>${t('guide_sector_3')}</li>
@@ -8549,9 +9088,9 @@ function renderGuideTab() {
         </ol>
       </div>
 
-      <div style="background:#fff; border:1px solid #e2e8f0; border-top:4px solid var(--ovb-orange); border-radius:12px; padding:16px;">
-        <h3 style="color:#c2410c; margin-bottom:8px;">${t('guide_invest_title')}</h3>
-        <ul style="padding-left:18px; font-size:13.5px; display:flex; flex-direction:column; gap:6px;">
+      <div class="guide-info-card accent-orange">
+        <h3 style="color:var(--ovb-orange);">${t('guide_invest_title')}</h3>
+        <ul style="padding-left:18px; font-size:13.5px; color:var(--text-slate); display:flex; flex-direction:column; gap:6px;">
           <li>${t('guide_invest_1')}</li>
           <li>${t('guide_invest_2')}</li>
           <li>${t('guide_invest_3')}</li>
@@ -8560,22 +9099,22 @@ function renderGuideTab() {
       </div>
     </div>
 
-    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:18px;">
+    <div class="guide-catalog-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-        <h3 style="color:var(--ovb-navy);">${t('guide_catalog_title')}</h3>
+        <h3>${t('guide_catalog_title')}</h3>
         <button class="btn btn-teal btn-sm" onclick="addNewCustomServicePrompt()">${t('btn_add_new_service')}</button>
       </div>
       <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:12px;">
         ${state.services
           .map(
             s => `
-            <div style="border:1px solid #e2e8f0; border-radius:8px; padding:12px; background:#f8fafc;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                <span style="font-weight:800; color:var(--ovb-navy);">${escapeHtml(getServiceName(s))}</span>
-                <span style="background:#e2e8f0; padding:2px 7px; border-radius:4px; font-size:11.5px; font-weight:700;">~${s.defaultEh} EH</span>
+            <div class="guide-service-tile">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
+                <span style="font-weight:700; color:var(--ovb-navy-text);">${escapeHtml(getServiceName(s))}</span>
+                <span style="background:var(--ovb-silver); color:var(--ovb-navy-text); padding:2px 7px; border-radius:4px; font-size:11.5px; font-weight:700; white-space:nowrap;">~${s.defaultEh} EH</span>
               </div>
-              <div style="font-size:12px; color:#0369a1; font-weight:600; margin-bottom:6px;">${escapeHtml(s.name)} (${escapeHtml(s.sector)})</div>
-              <div style="font-size:12.5px; color:#475569;">${escapeHtml(getServiceDescription(s))}</div>
+              <div style="font-size:12px; color:var(--ovb-navy); font-weight:600; margin-bottom:6px;">${escapeHtml(s.name)} (${escapeHtml(s.sector)})</div>
+              <div style="font-size:12.5px; color:var(--text-slate);">${escapeHtml(getServiceDescription(s))}</div>
             </div>
           `
           )
