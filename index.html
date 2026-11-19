@@ -7265,6 +7265,16 @@ function updateWorkerCareerField(workerId, field, value) {
   renderAll();
 }
 
+function formatQuotaScoreHtml(doneVal, quotaVal) {
+  const done = Number(doneVal) || 0;
+  const quota = Number(quotaVal) || 0;
+  const met = quota > 0 && done >= quota;
+  const text = `${done}/${quota}`;
+  return met
+    ? `<strong style="color:#16a34a; font-weight:800;">${text}</strong>`
+    : `<strong>${text}</strong>`;
+}
+
 function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
   const effectiveVisibleIds = visibleIds || getVisibleWorkerIdsForCurrentUser();
   const children = getDirectSubordinates(worker.id).filter(ch => effectiveVisibleIds.has(ch.id));
@@ -7282,6 +7292,8 @@ function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
   const mgrBadgeLabel = lang === 'sk' ? '👔 Vedúci' : lang === 'ua' ? '👔 Керівник' : '👔 Руководитель';
   const peerBadgeLabel = lang === 'sk' ? '👥 Kolega' : lang === 'ua' ? '👥 Колега' : '👥 Коллега';
   const assignBtnLabel = lang === 'sk' ? '🎯 Priradiť sem' : lang === 'ua' ? '🎯 Прив\'язати сюди' : '🎯 Привязать сюда';
+  const selfQuota = gStats.selfPlanEh > 0 ? gStats.selfPlanEh : gStats.selfTotalEh;
+  const groupQuota = gStats.verticalPlanEh > 0 ? gStats.verticalPlanEh : gStats.groupTotalEh;
 
   const cardClasses = [
     'worker-node-card',
@@ -7315,7 +7327,7 @@ function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
           <span class="worker-rank-tag" style="background:${rInfo.color};" title="${escapeAttr(rInfo.skName)} (${rInfo.eurPerEh.toFixed(2)} €/EH)">
             ${escapeHtml(rInfo.code)} • ${rInfo.eurPerEh.toFixed(2)}€
           </span>
-          ${isMe ? `<span class="me-badge">⭐ ${t('who_am_i_me_short') || 'Я'}</span>` : ''}
+          ${isMe ? `<span class="me-badge" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">⭐</span>` : ''}
           ${isDirectMgr ? `<span class="manager-role-badge">${mgrBadgeLabel}</span>` : ''}
           ${isPeer ? `<span class="peer-team-badge">${peerBadgeLabel}</span>` : ''}
           <span style="font-size:11px; color:#64748b; font-weight:700;">
@@ -7325,8 +7337,8 @@ function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
         <div class="worker-name-title">${escapeHtml(worker.name)}</div>
         <div class="worker-node-stats">
           <span>👥 ${t('node_in_vertical')} <strong>${gStats.totalDownline}</strong> (${t('node_direct')} ${gStats.directCount})</span>
-          <span>📈 ${t('node_self_eh')} <strong>${gStats.selfDoneEh} ✓</strong> / ${gStats.selfTotalEh}</span>
-          ${gStats.totalDownline > 0 ? `<span>🏆 ${t('node_group_eh')} <strong>${gStats.groupDoneEh} ✓</strong> / ${gStats.groupTotalEh} EH</span>` : ''}
+          <span>📈 ${t('node_self_eh')} ${formatQuotaScoreHtml(gStats.selfDoneEh, selfQuota)}</span>
+          ${gStats.totalDownline > 0 ? `<span>🏆 ${t('node_group_eh')} ${formatQuotaScoreHtml(gStats.groupDoneEh, groupQuota)}</span>` : ''}
           ${
             worker.targetRank
               ? `<span style="color:${mainRemText ? '#b45309' : '#15803d'}; font-weight:700;">
@@ -7390,6 +7402,8 @@ function renderHierarchyListView(rootWorker, visibleIds = null) {
           const isDirectMgr = !isSuper && directMgr && worker.id === directMgr.id;
           const isPeer = !isSuper && isDirectPeerOfCurrentUser(worker);
           const canManage = canManageWorker(worker.id);
+          const selfQuota = gStats.selfPlanEh > 0 ? gStats.selfPlanEh : gStats.selfTotalEh;
+          const groupQuota = gStats.verticalPlanEh > 0 ? gStats.verticalPlanEh : gStats.groupTotalEh;
           const remSummary = promo.requirements
             .filter(r => !r.isMet)
             .map(r => `${r.title.split('(')[0].trim()}: ост. ${r.remainingDone} ${r.unit}`)
@@ -7405,14 +7419,14 @@ function renderHierarchyListView(rootWorker, visibleIds = null) {
             }">
               <div>
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  ${isMe ? `<span class="me-badge">⭐ ${t('who_am_i_me_short') || 'Я'}</span>` : ''}
+                  ${isMe ? `<span class="me-badge" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">⭐</span>` : ''}
                   ${isDirectMgr ? `<span class="manager-role-badge">${mgrBadgeLabel}</span>` : ''}
                   ${isPeer ? `<span class="peer-team-badge">${peerBadgeLabel}</span>` : ''}
                   <span class="worker-rank-tag" style="background:${rInfo.color};">${escapeHtml(rInfo.skName)} (${rInfo.eurPerEh.toFixed(2)} €/EH)</span>
                   ${worker.targetRank ? `<span class="legend-badge-up">${t('banner_target')} ${escapeHtml(worker.targetRank)}↑</span>` : ''}
                   <strong style="font-size:15px;">${escapeHtml(worker.name)}</strong>
                   <span style="font-size:12px; color:#64748b;">
-                    (${t('node_in_vertical')} ${gStats.totalDownline} ${t('stat_people')} • ${t('node_plan')} ${worker.planEh || 0} EH • ${t('node_group_eh')} ${gStats.groupDoneEh} ✓ / ${gStats.groupTotalEh} EH)
+                    (${t('node_in_vertical')} ${gStats.totalDownline} ${t('stat_people')} • ${t('node_self_eh')} ${formatQuotaScoreHtml(gStats.selfDoneEh, selfQuota)}${gStats.totalDownline > 0 ? ` • ${t('node_group_eh')} ${formatQuotaScoreHtml(gStats.groupDoneEh, groupQuota)}` : ''})
                   </span>
                 </div>
                 <div style="font-size:12px; color:#b45309; font-weight:600; margin-top:4px;">
@@ -7605,14 +7619,15 @@ function renderBoardsTab() {
       });
 
       const plan = Number(worker.planEh) || 200;
-      const pct = plan > 0 ? Math.min(100, Math.round((totalEh / plan) * 100)) : 0;
+      const pct = plan > 0 ? Math.min(100, Math.round((doneEh / plan) * 100)) : 0;
       const subCount = getAllDescendants(worker.id).length;
+      const boardGroupQuota = promo.gStats.verticalPlanEh > 0 ? promo.gStats.verticalPlanEh : promo.gStats.groupTotalEh;
 
       return `
         <div class="consultant-board-card">
           <div class="board-card-header">
             <div class="board-worker-title">
-              ${worker.id === state.myWorkerId ? `<span class="me-badge">⭐ ${t('who_am_i_me_short') || 'Я'}</span>` : ''}
+              ${worker.id === state.myWorkerId ? `<span class="me-badge" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">⭐</span>` : ''}
               <span class="worker-rank-tag" style="background:${rInfo.color};">${escapeHtml(rInfo.code)} (${rInfo.eurPerEh.toFixed(2)}€)</span>
               <span>${escapeHtml(worker.name)}</span>
               ${worker.targetRank ? `<span class="legend-badge-up">${escapeHtml(worker.targetRank)}↑</span>` : ''}
@@ -7621,7 +7636,7 @@ function renderBoardsTab() {
           </div>
 
           <div class="board-progress-strip">
-            <span>${t('summary_personally')} <strong>${doneEh} ✓</strong> / ${totalEh} EH (${(doneEh * rInfo.eurPerEh).toFixed(0)} €)</span>
+            <span>${t('summary_personally')} ${formatQuotaScoreHtml(doneEh, plan)} (${(doneEh * rInfo.eurPerEh).toFixed(0)} €)</span>
             <div class="progress-bar-track">
               <div class="progress-bar-fill" style="width:${pct}%"></div>
             </div>
@@ -7631,7 +7646,7 @@ function renderBoardsTab() {
           ${
             subCount > 0
               ? `<div style="padding:5px 14px; background:#f0fdf4; border-bottom:1px solid #bbf7d0; font-size:11.5px; color:#166534; display:flex; justify-content:space-between; align-items:center;">
-                   <span>${t('board_downline_turnover')} (${subCount} ${t('stat_people')}): <strong>${promo.gStats.groupDoneEh} ✓ / ${promo.gStats.groupTotalEh} EH</strong></span>
+                   <span>${t('board_downline_turnover')} (${subCount} ${t('stat_people')}): ${formatQuotaScoreHtml(promo.gStats.groupDoneEh, boardGroupQuota)}</span>
                    ${
                      worker.id !== leader.id
                        ? `<button class="btn btn-outline btn-sm" style="padding:2px 6px; font-size:11px;" onclick="openBoardsForWorkerVertical('${worker.id}')">${t('board_only_his_vert')}</button>`
