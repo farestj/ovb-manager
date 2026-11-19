@@ -6361,7 +6361,16 @@ function updateGateTranslations(lang) {
   const gatePendingDesc = document.getElementById('gatePendingDesc');
   if (gatePendingDesc) {
     const email = window.currentCloudUser?.email || '';
-    if (isSk) {
+    const isEmailConfirmed = Boolean(window.currentCloudUser?.email_confirmed_at || window.currentCloudUser?.confirmed_at);
+    if (!isEmailConfirmed) {
+      if (isSk) {
+        gatePendingDesc.innerHTML = `1. Otvorte <a href="https://mail.ovbmail.eu/webmail/" target="_blank" style="color:#0284c7;font-weight:700;text-decoration:underline;">mail.ovbmail.eu</a> a potvrďte email <strong class="highlight-email">${email}</strong> cez odkaz v správe.<br>2. Potom počkajte na schválenie žiadosti <strong>Administrátorom</strong>.`;
+      } else if (isUa) {
+        gatePendingDesc.innerHTML = `1. Відкрийте <a href="https://mail.ovbmail.eu/webmail/" target="_blank" style="color:#0284c7;font-weight:700;text-decoration:underline;">mail.ovbmail.eu</a> та підтвердіть пошту <strong class="highlight-email">${email}</strong> за посиланням у листі.<br>2. Після цього дочекайтесь затвердження заявки <strong>Адміністратором</strong>.`;
+      } else {
+        gatePendingDesc.innerHTML = `1. Откройте <a href="https://mail.ovbmail.eu/webmail/" target="_blank" style="color:#0284c7;font-weight:700;text-decoration:underline;">mail.ovbmail.eu</a> и подтвердите почту <strong class="highlight-email">${email}</strong> по ссылке в письме.<br>2. После этого дождитесь утверждения заявки <strong>Администратором</strong>.`;
+      }
+    } else if (isSk) {
       gatePendingDesc.innerHTML = `Firemný email <strong class="highlight-email">${email}</strong> bol overený.<br>Vaša žiadosť bola odoslaná <strong>Administrátorovi</strong> na schválenie.`;
     } else if (isUa) {
       gatePendingDesc.innerHTML = `Корпоративна пошта <strong class="highlight-email">${email}</strong> підтверджена.<br>Ваш обліковий запис передано <strong>Адміністратору</strong> на затвердження.`;
@@ -9286,6 +9295,7 @@ async function requestMagicLink() {
 // Когда пользователь успешно вошел
 async function handleUserLoggedIn(user) {
   currentCloudUser = user;
+  window.currentCloudUser = user;
 
   // Запрашиваем профиль пользователя из user_profiles
   try {
@@ -9296,6 +9306,7 @@ async function handleUserLoggedIn(user) {
       .maybeSingle();
 
     currentCloudProfile = profile;
+    window.currentCloudProfile = profile;
 
     const isSuper = isSuperAdminUser();
 
@@ -9348,6 +9359,8 @@ async function handleUserLogout() {
 function handleUserLoggedOut() {
   currentCloudUser = null;
   currentCloudProfile = null;
+  window.currentCloudUser = null;
+  window.currentCloudProfile = null;
   state.myWorkerId = '';
   updateAuthGateUi();
   updateAuthUi();
@@ -9640,6 +9653,157 @@ function closeApprovalsModal() {
   document.getElementById('ovbApprovalsModal')?.classList.remove('open');
 }
 
+// ============================================================================
+// УМНЫЙ ПОИСК СУЩЕСТВУЮЩЕЙ КАРТОЧКИ РАБОТНИКА ПО ИМЕНИ И ФАМИЛИИ
+// ============================================================================
+
+function normalizeNameForMatching(str) {
+  if (!str) return '';
+  const cyrMap = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 'ё': 'e',
+    'є': 'ye', 'ж': 'zh', 'з': 'z', 'и': 'i', 'і': 'i', 'ї': 'i', 'й': 'i', 'к': 'k',
+    'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+    'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+    'ъ': '', 'ы': 'i', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+  };
+
+  let s = String(str)
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  let translit = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    translit += cyrMap[ch] !== undefined ? cyrMap[ch] : ch;
+  }
+
+  return translit
+    .replace(/kh/g, 'h')
+    .replace(/ph/g, 'f')
+    .replace(/ck/g, 'k')
+    .replace(/w/g, 'v')
+    .replace(/g/g, 'h')
+    .replace(/yi|iy|yy|j|y/g, 'i')
+    .replace(/(.)\1+/g, '$1')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function levenshteinDistance(a, b) {
+  if (a === b) return 0;
+  const al = a.length;
+  const bl = b.length;
+  if (al === 0) return bl;
+  if (bl === 0) return al;
+  const dp = Array.from({ length: al + 1 }, () => new Array(bl + 1).fill(0));
+  for (let i = 0; i <= al; i++) dp[i][0] = i;
+  for (let j = 0; j <= bl; j++) dp[0][j] = j;
+  for (let i = 1; i <= al; i++) {
+    for (let j = 1; j <= bl; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+    }
+  }
+  return dp[al][bl];
+}
+
+function tokenSimilarity(a, b) {
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1;
+  return 1 - levenshteinDistance(a, b) / maxLen;
+}
+
+function findMatchingWorkerByName(fullName, email, workersList) {
+  const workers = Array.isArray(workersList) ? workersList : (state.workers || []);
+  if (workers.length === 0) return null;
+
+  const cleanEmail = (email || '').trim().toLowerCase();
+  if (cleanEmail) {
+    const byEmail = workers.find(w => w.email && w.email.trim().toLowerCase() === cleanEmail);
+    if (byEmail) {
+      return { worker: byEmail, score: 1.0, reason: 'email' };
+    }
+  }
+
+  const rawName = (fullName || '').replace(/\([^)]*\)/g, ' ').trim();
+  const normInput = normalizeNameForMatching(rawName);
+  const inputTokens = normInput ? normInput.split(' ').filter(Boolean) : [];
+  if (inputTokens.length === 0) return null;
+
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const w of workers) {
+    const cleanWorkerName = (w.name || '').replace(/\([^)]*\)/g, ' ').trim();
+    const normWorker = normalizeNameForMatching(cleanWorkerName);
+    const workerTokens = normWorker ? normWorker.split(' ').filter(Boolean) : [];
+    if (workerTokens.length === 0) continue;
+
+    // Точное совпадение (включая обратный порядок слов: Имя Фамилия / Фамилия Имя)
+    const sortedInput = inputTokens.slice().sort().join(' ');
+    const sortedWorker = workerTokens.slice().sort().join(' ');
+    if (sortedInput === sortedWorker) {
+      return { worker: w, score: 0.99, reason: 'exact_name' };
+    }
+
+    // Попарное нечеткое сопоставление слов (учитывает опечатки типа Bakhmatkyi / Bakhmatskyi и кириллицу/латиницу)
+    const usedWorkerIdx = new Set();
+    const pairScores = [];
+    const smaller = inputTokens.length <= workerTokens.length ? inputTokens : workerTokens;
+    const larger = inputTokens.length <= workerTokens.length ? workerTokens : inputTokens;
+
+    for (const tok of smaller) {
+      let localBest = 0;
+      let localIdx = -1;
+      for (let j = 0; j < larger.length; j++) {
+        if (usedWorkerIdx.has(j)) continue;
+        const sim = tokenSimilarity(tok, larger[j]);
+        if (sim > localBest) {
+          localBest = sim;
+          localIdx = j;
+        }
+      }
+      if (localIdx !== -1) {
+        usedWorkerIdx.add(localIdx);
+        pairScores.push(localBest);
+      } else {
+        pairScores.push(0);
+      }
+    }
+
+    if (pairScores.length === 0) continue;
+
+    const minPair = Math.min(...pairScores);
+    const avgPair = pairScores.reduce((acc, v) => acc + v, 0) / pairScores.length;
+
+    let finalScore = 0;
+    if (inputTokens.length >= 2 && workerTokens.length >= 2) {
+      // Оба имени и фамилии должны быть достаточно близкими, чтобы Иван Манайло не совпал с Иваном Бахматским
+      if (minPair >= 0.62 && avgPair >= 0.78) {
+        finalScore = avgPair;
+      }
+    } else if (smaller.length === 1 && larger.length >= 1) {
+      // Если в вертикали указано только имя (например "Yaroslav"), допускаем совпадение с пониженным приоритетом
+      if (pairScores[0] >= 0.88) {
+        finalScore = pairScores[0] * 0.8;
+      }
+    }
+
+    if (finalScore > bestScore) {
+      bestScore = finalScore;
+      bestMatch = { worker: w, score: finalScore, reason: 'fuzzy_name' };
+    }
+  }
+
+  return bestScore >= 0.76 ? bestMatch : null;
+}
+
+window.findMatchingWorkerByName = findMatchingWorkerByName;
+
 function renderApprovalsList() {
   const listEl = document.getElementById('ovb_approvals_list');
   if (!listEl) return;
@@ -9648,14 +9812,12 @@ function renderApprovalsList() {
   const emptyTitle = lang === 'sk' ? 'Žiadne čakajúce žiadosti' : (lang === 'ua' ? 'Немає очікуючих заявок' : 'Нет ожидающих заявок');
   const emptyDesc = lang === 'sk' ? 'Všetci zaregistrovaní spolupracovníci sú už priradení do štruktúry.' : (lang === 'ua' ? 'Усі зареєстровані співробітники вже розподілені по вертикалі.' : 'Все зарегистрированные сотрудники уже распределены по вертикали.');
   const lblReg = lang === 'sk' ? 'Registrácia:' : (lang === 'ua' ? 'Реєстрація:' : 'Регистрация:');
-  const lblPending = lang === 'sk' ? 'Čaká na zaradenie' : (lang === 'ua' ? 'Очікує призначення' : 'Ожидает назначения');
-  const lblRank = lang === 'sk' ? 'Pozícia / Hodnosť:' : (lang === 'ua' ? 'Посада / Ранг:' : 'Должность / Ранг:');
-  const lblMgr = lang === 'sk' ? 'Vedúci (Manažér):' : (lang === 'ua' ? 'Керівник (Manager):' : 'Руководитель (Manager):');
-  const lblLine = lang === 'sk' ? 'Typ línie:' : (lang === 'ua' ? 'Тип гілки:' : 'Тип ветки:');
-  const lblNepriama = lang === 'sk' ? 'Zelená (Nepriama)' : (lang === 'ua' ? 'Зелена (Nepriama)' : 'Зеленая (Nepriama)');
-  const lblPriama = lang === 'sk' ? 'Oranžová (Priama)' : (lang === 'ua' ? 'Помаранчева (Priama)' : 'Оранжевая (Priama)');
+  const lblPending = lang === 'sk' ? 'Čaká na priradenie' : (lang === 'ua' ? 'Очікує прив\'язки' : 'Ожидает привязки');
+  const lblLinkWorker = lang === 'sk' ? '🔗 Priradiť k existujúcej karte v štruktúre:' : (lang === 'ua' ? '🔗 Прив\'язати до існуючої картки у вертикалі:' : '🔗 Привязать к существующей карточке в вертикали:');
+  const lblSelectPlaceholder = lang === 'sk' ? '— Vyberte existujúceho spolupracovníka —' : (lang === 'ua' ? '— Оберіть існуючого співробітника —' : '— Выберите существующую карточку сотрудника —');
+  const lblUnder = lang === 'sk' ? 'pod' : (lang === 'ua' ? 'під' : 'под');
   const btnReject = lang === 'sk' ? '❌ Zamietnuť' : (lang === 'ua' ? '❌ Відхилити' : '❌ Отклонить');
-  const btnApprove = lang === 'sk' ? '✅ Schváliť a priradiť' : (lang === 'ua' ? '✅ Схвалити та призначити' : '✅ Одобрить и добавить в вертикаль');
+  const btnApprove = lang === 'sk' ? '✅ Schváliť a priradiť ku karte' : (lang === 'ua' ? '✅ Схвалити та прив\'язати до картки' : '✅ Одобрить и привязать к карточке');
 
   if (pendingApprovalsList.length === 0) {
     listEl.innerHTML = `
@@ -9668,14 +9830,46 @@ function renderApprovalsList() {
     return;
   }
 
-  // Сортируем менеджеров для выпадающего списка
-  const managers = (state.workers || []).slice().sort((a, b) => a.name.localeCompare(b.name));
+  const workersMap = {};
+  (state.workers || []).forEach(w => { workersMap[w.id] = w; });
+  const sortedWorkers = (state.workers || []).slice().sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
   listEl.innerHTML = pendingApprovalsList.map(u => {
     const createdDate = u.created_at ? new Date(u.created_at).toLocaleString(lang === 'sk' ? 'sk-SK' : (lang === 'ua' ? 'uk-UA' : 'ru-RU')) : 'Nedávno';
-    const safeName = escapeHtml(u.full_name || u.email.split('@')[0]);
+    const rawName = u.full_name || u.email.split('@')[0];
+    const safeName = escapeHtml(rawName);
     const safeEmail = escapeHtml(u.email);
     const uid = u.id;
+
+    const match = findMatchingWorkerByName(rawName, u.email, sortedWorkers);
+    const matchedWorker = match ? match.worker : null;
+    const matchedManager = matchedWorker && matchedWorker.managerId ? workersMap[matchedWorker.managerId] : null;
+
+    let matchBannerHtml = '';
+    if (matchedWorker) {
+      const mgrText = matchedManager ? ` (${lblUnder} ${escapeHtml(matchedManager.name)})` : '';
+      const matchedMsg = lang === 'sk'
+        ? `✅ Automaticky nájdená karta podľa mena: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
+        : (lang === 'ua'
+          ? `✅ Автоматично знайдено картку за ім'ям: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
+          : `✅ Автоматически найдена карточка по имени: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`);
+      matchBannerHtml = `
+        <div style="background:#f0fdf4; border:1px solid #86efac; color:#166534; padding:8px 12px; border-radius:8px; font-size:12.5px;">
+          ${matchedMsg}
+        </div>
+      `;
+    } else {
+      const noMatchMsg = lang === 'sk'
+        ? '⚠️ Zhoda podľa mena sa nenašla — vyberte existujúcu kartu zo zoznamu nižšie (nová karta sa nevytvorí).'
+        : (lang === 'ua'
+          ? '⚠️ Збіг за ім\'ям та прізвищем не знайдено — оберіть існуючу картку зі списку нижче (нова картка не створюється).'
+          : '⚠️ Совпадение по имени и фамилии не найдено — выберите существующую карточку из списка ниже (новая карточка не создаётся).');
+      matchBannerHtml = `
+        <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:8px 12px; border-radius:8px; font-size:12.5px;">
+          ${noMatchMsg}
+        </div>
+      `;
+    }
 
     return `
       <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:12px;">
@@ -9690,36 +9884,20 @@ function renderApprovalsList() {
           </span>
         </div>
 
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px; background:#fff; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11.5px; font-weight:700;">${lblRank}</label>
-            <select id="rank_${uid}" class="select-field" style="width:100%; font-size:12.5px; padding:5px 8px;">
-              <option value="SA1" selected>SA1 (Servisný asistent 1)</option>
-              <option value="R I.">R I. (Reprezentant I.)</option>
-              <option value="R II.">R II. (Reprezentant II.)</option>
-              <option value="R III.">R III. (Reprezentant III.)</option>
-              <option value="SM">SM (Senior Manager)</option>
-              <option value="SL">SL (Senior Leader)</option>
-              <option value="BD">BD (Bezirksdirektor)</option>
-              <option value="BL">BL (Bereichsleiter)</option>
-              <option value="GST">GST (Geschäftsstellenleiter)</option>
-            </select>
-          </div>
+        ${matchBannerHtml}
 
+        <div style="background:#fff; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
           <div class="form-group" style="margin:0;">
-            <label style="font-size:11.5px; font-weight:700;">${lblMgr}</label>
-            <select id="mgr_${uid}" class="select-field" style="width:100%; font-size:12.5px; padding:5px 8px;">
-              ${managers.map(m => `
-                <option value="${m.id}" ${m.id === 'w_matvii' ? 'selected' : (m.id === 'w_dima' ? 'selected' : '')}>[${m.rank}] ${escapeHtml(m.name)}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <div class="form-group" style="margin:0;">
-            <label style="font-size:11.5px; font-weight:700;">${lblLine}</label>
-            <select id="line_${uid}" class="select-field" style="width:100%; font-size:12.5px; padding:5px 8px;">
-              <option value="nepriama" selected>${lblNepriama}</option>
-              <option value="priama">${lblPriama}</option>
+            <label for="link_worker_${uid}" style="font-size:12px; font-weight:700; display:block; margin-bottom:6px; color:#0f172a;">${lblLinkWorker}</label>
+            <select id="link_worker_${uid}" class="select-field" style="width:100%; font-size:13px; padding:7px 10px; font-weight:600;">
+              <option value="">${lblSelectPlaceholder}</option>
+              ${sortedWorkers.map(w => {
+                const mgr = w.managerId ? workersMap[w.managerId] : null;
+                const mgrPart = mgr ? ` (${lblUnder} ${mgr.name})` : '';
+                const emailPart = w.email && w.email.toLowerCase() !== u.email.toLowerCase() ? ` [email: ${w.email}]` : '';
+                const isSelected = matchedWorker && matchedWorker.id === w.id;
+                return `<option value="${escapeHtml(w.id)}" ${isSelected ? 'selected' : ''}>[${escapeHtml(w.rank)}] ${escapeHtml(w.name)}${escapeHtml(mgrPart)}${escapeHtml(emailPart)}</option>`;
+              }).join('')}
             </select>
           </div>
         </div>
@@ -9738,44 +9916,63 @@ function renderApprovalsList() {
 }
 
 async function approvePendingUser(profileId, email, fullName) {
-  const rankSelect = document.getElementById(`rank_${profileId}`);
-  const mgrSelect = document.getElementById(`mgr_${profileId}`);
-  const lineSelect = document.getElementById(`line_${profileId}`);
+  const linkSelect = document.getElementById(`link_worker_${profileId}`);
+  const selectedWorkerId = (linkSelect?.value || '').trim();
 
-  const rank = rankSelect?.value || 'SA1';
-  const managerId = mgrSelect?.value || 'w_dima';
-  const lineType = lineSelect?.value || 'nepriama';
+  // Если выпадающий список не выбран — пробуем ещё раз автопоиск по имени и фамилии
+  let targetWorker = selectedWorkerId
+    ? (state.workers || []).find(w => w.id === selectedWorkerId)
+    : null;
 
-  const newWorkerId = 'w_' + Math.random().toString(36).substring(2, 10);
+  if (!targetWorker) {
+    const autoMatch = findMatchingWorkerByName(fullName, email, state.workers || []);
+    if (autoMatch && autoMatch.worker) {
+      targetWorker = autoMatch.worker;
+    }
+  }
+
+  if (!targetWorker) {
+    alert(`⚠️ Не выбрана существующая карточка для "${fullName}".\n\nНовые карточки при одобрении больше не создаются автоматически. Пожалуйста, выберите нужного сотрудника из списка (или сначала добавьте его в нужное место в вертикали, а затем привяжите заявку).`);
+    return;
+  }
+
+  const workerId = targetWorker.id;
+  const rank = targetWorker.rank || 'SA1';
+  const manager = targetWorker.managerId ? (state.workers || []).find(w => w.id === targetWorker.managerId) : null;
 
   try {
-    // 1. Вставляем работника в public.workers
-    const { error: wErr } = await supabaseClient.from('workers').insert({
-      id: newWorkerId,
-      name: fullName,
-      rank: rank,
-      target_rank: (rank === 'SA1' ? 'R I.' : (rank === 'R I.' ? 'R II.' : (rank === 'R II.' ? 'R III.' : 'GST'))),
-      manager_id: managerId,
-      line_type: lineType,
-      email: email,
-      plan_eh: 100,
-      historical_personal_eh: 0,
-      quarter_group_eh_manual: 0,
-      manual_structure_count: 0
-    });
+    // 1. Очищаем этот email у других карточек, если вдруг он был указан где-то ещё (во избежание конфликта UNIQUE)
+    await supabaseClient
+      .from('workers')
+      .update({ email: null })
+      .eq('email', email)
+      .neq('id', workerId);
+
+    // 2. Прописываем email на существующей карточке (не меняя её место в вертикали, руководителя и ранг!)
+    const { error: wErr } = await supabaseClient
+      .from('workers')
+      .update({
+        email: email,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', workerId);
 
     if (wErr) throw wErr;
 
-    // 2. Обновляем user_profiles
-    const { error: pErr } = await supabaseClient.from('user_profiles').update({
-      worker_id: newWorkerId,
-      status: 'active',
-      role: (rank === 'GST' || rank === 'BL') ? 'manager' : 'worker'
-    }).eq('id', profileId);
+    // 3. Привязываем user_profiles к существующей карточке и активируем доступ
+    const { error: pErr } = await supabaseClient
+      .from('user_profiles')
+      .update({
+        worker_id: workerId,
+        status: 'active',
+        role: (rank === 'GST' || rank === 'BL' || rank === 'BD' || rank === 'VR') ? 'manager' : 'worker'
+      })
+      .eq('id', profileId);
 
     if (pErr) throw pErr;
 
-    alert(`🎉 Сотрудник ${fullName} успешно одобрен и добавлен на должность [${rank}] под выбранным руководителем!`);
+    const mgrSuffix = manager ? ` (под ${manager.name})` : '';
+    alert(`🎉 Сотрудник ${fullName} одобрен и привязан к существующей карточке [${rank}] ${targetWorker.name}${mgrSuffix}!`);
 
     await fetchCloudData();
     await fetchPendingApprovals();
@@ -9995,6 +10192,8 @@ async function handleGateAuthSubmit(e) {
         }, { onConflict: 'id' });
         currentCloudUser = data.user;
         currentCloudProfile = { id: data.user.id, email, full_name: fullName, status: 'pending', role: 'consultant' };
+        window.currentCloudUser = currentCloudUser;
+        window.currentCloudProfile = currentCloudProfile;
       }
 
       // Немедленный переход на экран "Заявка отправлена на рассмотрение"
