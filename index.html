@@ -1941,6 +1941,122 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.08);
 }
 
+/* ==========================================================================
+   РЕЖИМ ИНТЕРАКТИВНОЙ ПРИВЯЗКИ ЗАЯВКИ КЛИКОМ В ВЕРТИКАЛИ + БЕЙДЖИ КОМАНДЫ
+   ========================================================================== */
+.assign-mode-banner {
+  position: sticky;
+  top: 44px;
+  z-index: 130;
+  background: linear-gradient(90deg, #003780 0%, #025AB2 60%, #0284c7 100%);
+  color: #ffffff;
+  border-bottom: 2px solid #38bdf8;
+  box-shadow: 0 6px 20px rgba(2, 90, 178, 0.35);
+  padding: 10px 16px;
+}
+
+.assign-mode-banner-inner {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.assign-mode-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.assign-mode-pill {
+  background: #fde047;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+}
+
+.assign-mode-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.assign-mode-active .worker-node-card,
+body.assign-mode-active .hierarchy-list-card {
+  cursor: pointer !important;
+  border: 2px dashed #0284c7 !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+body.assign-mode-active .worker-node-card:hover,
+body.assign-mode-active .hierarchy-list-card:hover {
+  border: 2px solid #16a34a !important;
+  background: #f0fdf4 !important;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25), 0 8px 20px rgba(22, 163, 74, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+.assign-pick-btn {
+  width: 100%;
+  background: #16a34a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background 0.15s ease;
+}
+
+.assign-pick-btn:hover {
+  background: #15803d;
+}
+
+.manager-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #7dd3fc;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.peer-team-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #f3e8ff;
+  color: #6b21a8;
+  border: 1px solid #d8b4fe;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
 
 </style>
 </head>
@@ -2185,6 +2301,9 @@ body {
       <span></span>
     </span>
   </button>
+
+  <!-- БАННЕР РЕЖИМА ИНТЕРАКТИВНОЙ ПРИВЯЗКИ ЗАЯВКИ КЛИКОМ В ВЕРТИКАЛИ -->
+  <div id="pendingAssignmentBanner" class="assign-mode-banner" style="display:none;"></div>
 
   <!-- ОСНОВНОЙ КОНТЕНТ -->
   <main class="main-container">
@@ -2769,7 +2888,7 @@ body {
           <span style="font-size:22px;">🔔</span>
           <div>
             <h3 style="margin:0; font-size:16px;">Заявки на регистрацию сотрудников</h3>
-            <div style="font-size:11.5px; color:#64748b;">Одобрение и назначение должности и руководителя в вертикали OVB</div>
+            <div style="font-size:11.5px; color:#64748b;">Сверьте имя и фамилию и выберите карточку сотрудника в вертикали OVB</div>
           </div>
         </div>
         <button class="btn btn-outline btn-sm" onclick="closeApprovalsModal()">✕</button>
@@ -3562,13 +3681,13 @@ const INITIAL_WORKERS = [
     notes: 'Под Ivanna Savko'
   },
 
-  // Под VR Artur Serbinov
+  // Под Ivan Bakhmatkyi (в ветке VR Artur Serbinov)
   {
     id: 'w_matvii',
     name: 'Matvii Yanytskyi',
     rank: 'R I.',
     targetRank: 'R II.',
-    managerId: 'w_artur',
+    managerId: 'w_ivan_b',
     lineType: 'nepriama',
     planEh: 200,
     historicalPersonalEh: 110,
@@ -3627,6 +3746,7 @@ const INITIAL_WORKERS = [
     historicalPersonalEh: 0,
     quarterGroupEhManual: 0,
     phone: '',
+    email: '5541721@ovbmail.eu',
     notes: 'В вертикали Artur Serbinov'
   },
 
@@ -4522,6 +4642,74 @@ function getWorkerAndVerticalList(leaderId) {
   return [leader, ...getAllDescendants(leader.id)];
 }
 
+// ============================================================================
+// ПРАВА ВИДИМОСТИ: СЕБЯ + СВОЯ ВЕРТИКАЛЬ + ПРЯМОЙ РУКОВОДИТЕЛЬ + КОЛЛЕГИ ПОД НИМ
+// ============================================================================
+
+function getVisibleWorkerIdsForCurrentUser() {
+  const allIds = new Set(state.workers.map(w => w.id));
+  if (typeof isSuperAdminUser === 'function' && isSuperAdminUser()) {
+    return allIds;
+  }
+  if (!state.myWorkerId) {
+    return allIds;
+  }
+  const me = state.workers.find(w => w.id === state.myWorkerId);
+  if (!me) {
+    return allIds;
+  }
+
+  const visible = new Set();
+  // 1. Сам сотрудник
+  visible.add(me.id);
+  // 2. Вся его собственная вертикаль (подчинённые вниз)
+  getAllDescendants(me.id).forEach(d => visible.add(d.id));
+  // 3. Его прямой руководитель + все коллеги под тем же прямым руководителем
+  if (me.managerId && allIds.has(me.managerId)) {
+    visible.add(me.managerId);
+    state.workers.forEach(w => {
+      if (w.managerId === me.managerId) {
+        visible.add(w.id);
+      }
+    });
+  }
+  return visible;
+}
+
+function getVisibleWorkersForCurrentUser() {
+  const visibleIds = getVisibleWorkerIdsForCurrentUser();
+  return state.workers.filter(w => visibleIds.has(w.id));
+}
+
+function canManageWorker(workerId) {
+  if (typeof isSuperAdminUser === 'function' && isSuperAdminUser()) {
+    return true;
+  }
+  if (!state.myWorkerId || !workerId) return false;
+  if (workerId === state.myWorkerId) return true;
+  const myDescendants = new Set(getAllDescendants(state.myWorkerId).map(w => w.id));
+  return myDescendants.has(workerId);
+}
+
+function getDirectManagerForCurrentUser() {
+  if (!state.myWorkerId) return null;
+  const me = state.workers.find(w => w.id === state.myWorkerId);
+  if (!me || !me.managerId) return null;
+  return state.workers.find(w => w.id === me.managerId) || null;
+}
+
+function isDirectPeerOfCurrentUser(worker) {
+  if (!state.myWorkerId || !worker || worker.id === state.myWorkerId) return false;
+  const me = state.workers.find(w => w.id === state.myWorkerId);
+  return Boolean(me && me.managerId && worker.managerId === me.managerId);
+}
+
+window.getVisibleWorkerIdsForCurrentUser = getVisibleWorkerIdsForCurrentUser;
+window.getVisibleWorkersForCurrentUser = getVisibleWorkersForCurrentUser;
+window.canManageWorker = canManageWorker;
+window.getDirectManagerForCurrentUser = getDirectManagerForCurrentUser;
+window.isDirectPeerOfCurrentUser = isDirectPeerOfCurrentUser;
+
 function getWorkerProductionStats(workerId) {
   const workerClients = state.clients.filter(c => c.workerId === workerId);
   let plannedEh = 0;
@@ -5117,7 +5305,7 @@ function updateHeaderStats() {
   }
 
   const badgePyramid = document.getElementById('badgePyramidCount');
-  if (badgePyramid) badgePyramid.textContent = state.workers.length;
+  if (badgePyramid) badgePyramid.textContent = getVisibleWorkersForCurrentUser().length;
 
   const badgeClients = document.getElementById('badgeClientsCount');
   if (badgeClients) badgeClients.textContent = state.clients.length;
@@ -5216,6 +5404,9 @@ window.toggleSideNav = toggleSideNav;
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
     closeSideNav();
+    if (window.pendingAssignmentState && typeof cancelPendingWorkerAssignment === 'function') {
+      cancelPendingWorkerAssignment(false);
+    }
   }
 });
 
@@ -6792,14 +6983,54 @@ function setPyramidZoom(newZoom) {
 
 
 function renderPyramidTab() {
+  const visibleIds = getVisibleWorkerIdsForCurrentUser();
+  const visibleWorkers = getVisibleWorkersForCurrentUser();
+  const isSuper = typeof isSuperAdminUser === 'function' && isSuperAdminUser();
+  const meWorker = state.myWorkerId ? state.workers.find(w => w.id === state.myWorkerId) : null;
+  const directMgr = getDirectManagerForCurrentUser();
+
+  // Обновляем кнопку "Вся структура" / "Моя команда" в зависимости от прав
+  const btnFocusDima = document.getElementById('btnFocusDima');
+  if (btnFocusDima) {
+    if (isSuper || visibleIds.has('w_dima')) {
+      btnFocusDima.style.display = '';
+      btnFocusDima.textContent = t('btn_focus_dima');
+      btnFocusDima.onclick = () => focusPyramidOn('w_dima');
+    } else if (directMgr) {
+      btnFocusDima.style.display = '';
+      const lang = state.lang || 'ru';
+      btnFocusDima.textContent =
+        lang === 'sk'
+          ? `👥 Môj tím (${directMgr.name})`
+          : lang === 'ua'
+            ? `👥 Моя команда (${directMgr.name})`
+            : `👥 Моя команда (${directMgr.name})`;
+      btnFocusDima.onclick = () => focusPyramidOn(directMgr.id);
+    } else {
+      btnFocusDima.style.display = 'none';
+    }
+  }
+
+  // Кнопка "Добавить человека" на тулбаре: добавляем под текущего фокуса (если есть право) или под себя
+  const btnAddPyramid = document.getElementById('btnAddWorkerPyramid');
+  if (btnAddPyramid) {
+    const defaultAddUnder = canManageWorker(state.pyramidFocusId) ? state.pyramidFocusId : (state.myWorkerId || state.pyramidFocusId);
+    btnAddPyramid.onclick = () => openWorkerModal(null, defaultAddUnder);
+  }
+
   const selectEl = document.getElementById('pyramidFocusSelect');
   if (selectEl) {
-    const exists = state.workers.some(w => w.id === state.pyramidFocusId);
-    if (!exists && state.workers.length > 0) {
-      state.pyramidFocusId = state.myWorkerId || state.workers[0].id;
+    const existsAndVisible = visibleIds.has(state.pyramidFocusId);
+    if (!existsAndVisible && visibleWorkers.length > 0) {
+      state.pyramidFocusId =
+        !isSuper && directMgr && visibleIds.has(directMgr.id)
+          ? directMgr.id
+          : state.myWorkerId && visibleIds.has(state.myWorkerId)
+            ? state.myWorkerId
+            : visibleWorkers[0].id;
     }
 
-    selectEl.innerHTML = getSortedWorkers()
+    selectEl.innerHTML = getSortedWorkers(visibleWorkers)
       .map(w => {
         return `<option value="${w.id}" ${w.id === state.pyramidFocusId ? 'selected' : ''}>
           ${escapeHtml(formatWorkerOptionLabel(w, true))}
@@ -6808,14 +7039,21 @@ function renderPyramidTab() {
       .join('');
   }
 
-  const focusWorker = state.workers.find(w => w.id === state.pyramidFocusId) || state.workers[0];
+  const focusWorker = visibleWorkers.find(w => w.id === state.pyramidFocusId) || visibleWorkers[0] || state.workers[0];
   const bannerEl = document.getElementById('pyramidFocusBanner');
   if (bannerEl && focusWorker) {
     const promo = analyzeWorkerPromotion(focusWorker);
     const gStats = promo.gStats;
     const manager = state.workers.find(w => w.id === focusWorker.managerId);
+    const canJumpUp = Boolean(manager && visibleIds.has(manager.id));
+    const canManageFocus = canManageWorker(focusWorker.id);
     const isMe = state.myWorkerId && focusWorker.id === state.myWorkerId;
+    const isDirectMgrFocus = !isSuper && directMgr && focusWorker.id === directMgr.id;
+    const isPeerFocus = !isSuper && isDirectPeerOfCurrentUser(focusWorker);
     const rInfo = promo.currentRankInfo;
+    const lang = state.lang || 'ru';
+    const mgrBadgeLabel = lang === 'sk' ? '👔 Vedúci' : lang === 'ua' ? '👔 Керівник' : '👔 Руководитель';
+    const peerBadgeLabel = lang === 'sk' ? '👥 Kolega' : lang === 'ua' ? '👥 Колега' : '👥 Коллега';
 
     bannerEl.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
@@ -6825,6 +7063,8 @@ function renderPyramidTab() {
           </div>
           <div style="font-size:16px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px; margin-top:4px; flex-wrap:wrap;">
             ${isMe ? `<span class="me-badge">${t('banner_is_me')}</span>` : ''}
+            ${isDirectMgrFocus ? `<span class="manager-role-badge">${mgrBadgeLabel}</span>` : ''}
+            ${isPeerFocus ? `<span class="peer-team-badge">${peerBadgeLabel}</span>` : ''}
             <span class="worker-rank-tag" style="background:${rInfo.color}; font-size:12px; padding:2px 7px;">${escapeHtml(rInfo.skName)} (${rInfo.eurPerEh.toFixed(2)} €/EH)</span>
             <span>${escapeHtml(focusWorker.name)}</span>
             ${focusWorker.targetRank ? `<span class="legend-badge-up">${t('banner_target')} ${escapeHtml(focusWorker.targetRank)}↑</span>` : ''}
@@ -6851,7 +7091,7 @@ function renderPyramidTab() {
               : ''
           }
           ${
-            manager
+            canJumpUp
               ? `<button class="btn btn-outline btn-sm" onclick="focusPyramidOn('${manager.id}')">
                    ${t('banner_up_btn')} (${escapeHtml(manager.name)})
                  </button>`
@@ -6860,14 +7100,18 @@ function renderPyramidTab() {
           <button class="btn btn-outline btn-sm" onclick="openBoardsForWorkerVertical('${focusWorker.id}')">
             ${t('banner_boards_btn')}
           </button>
-          <button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${focusWorker.id}')">
-            ${t('banner_add_worker_under')} ${escapeHtml(focusWorker.name)}
-          </button>
+          ${
+            canManageFocus
+              ? `<button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${focusWorker.id}')">
+                   ${t('banner_add_worker_under')} ${escapeHtml(focusWorker.name)}
+                 </button>`
+              : ''
+          }
         </div>
       </div>
 
       <!-- КАРЬЕРНЫЙ АНАЛИЗАТОР ПОВЫШЕНИЯ (Plán kariéry OVB) -->
-      ${renderCareerAnalyzerWidget(focusWorker, promo)}
+      ${canManageFocus ? renderCareerAnalyzerWidget(focusWorker, promo) : ''}
     `;
   }
 
@@ -6905,13 +7149,13 @@ function renderPyramidTab() {
         </div>
         <div class="org-tree">
           <ul>
-            ${renderWorkerTreeNode(focusWorker, true)}
+            ${renderWorkerTreeNode(focusWorker, true, visibleIds)}
           </ul>
         </div>
       </div>
     `;
   } else {
-    container.innerHTML = renderHierarchyListView(focusWorker);
+    container.innerHTML = renderHierarchyListView(focusWorker, visibleIds);
   }
 }
 
@@ -7021,12 +7265,23 @@ function updateWorkerCareerField(workerId, field, value) {
   renderAll();
 }
 
-function renderWorkerTreeNode(worker, isRoot = false) {
-  const children = getDirectSubordinates(worker.id);
+function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
+  const effectiveVisibleIds = visibleIds || getVisibleWorkerIdsForCurrentUser();
+  const children = getDirectSubordinates(worker.id).filter(ch => effectiveVisibleIds.has(ch.id));
   const promo = analyzeWorkerPromotion(worker);
   const gStats = promo.gStats;
   const rInfo = promo.currentRankInfo;
   const isMe = worker.id === state.myWorkerId;
+  const isSuper = typeof isSuperAdminUser === 'function' && isSuperAdminUser();
+  const directMgr = getDirectManagerForCurrentUser();
+  const isDirectMgr = !isSuper && directMgr && worker.id === directMgr.id;
+  const isPeer = !isSuper && isDirectPeerOfCurrentUser(worker);
+  const canManage = canManageWorker(worker.id);
+  const isAssignMode = Boolean(window.pendingAssignmentState);
+  const lang = state.lang || 'ru';
+  const mgrBadgeLabel = lang === 'sk' ? '👔 Vedúci' : lang === 'ua' ? '👔 Керівник' : '👔 Руководитель';
+  const peerBadgeLabel = lang === 'sk' ? '👥 Kolega' : lang === 'ua' ? '👥 Колега' : '👥 Коллега';
+  const assignBtnLabel = lang === 'sk' ? '🎯 Priradiť sem' : lang === 'ua' ? '🎯 Прив\'язати сюди' : '🎯 Привязать сюда';
 
   const cardClasses = [
     'worker-node-card',
@@ -7039,7 +7294,7 @@ function renderWorkerTreeNode(worker, isRoot = false) {
 
   const childrenHtml =
     children.length > 0
-      ? `<ul>${children.map(ch => renderWorkerTreeNode(ch, false)).join('')}</ul>`
+      ? `<ul>${children.map(ch => renderWorkerTreeNode(ch, false, effectiveVisibleIds)).join('')}</ul>`
       : '';
 
   // Краткая строка что осталось до повышения
@@ -7048,15 +7303,21 @@ function renderWorkerTreeNode(worker, isRoot = false) {
     .map(r => `${r.remainingDone} ${r.unit}`)
     .join(' + ');
 
+  const cardClickAttrs = isAssignMode
+    ? `onmousedown="event.stopPropagation()" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)" title="Нажмите, чтобы привязать заявку к ${escapeAttr(worker.name)}"`
+    : '';
+
   return `
     <li>
-      <div class="${cardClasses}">
+      <div class="${cardClasses}" ${cardClickAttrs}>
         ${worker.targetRank ? `<div class="target-rank-badge" title="${escapeAttr(t('node_target_title'))}">${escapeHtml(worker.targetRank)}↑</div>` : ''}
         <div class="worker-node-header">
           <span class="worker-rank-tag" style="background:${rInfo.color};" title="${escapeAttr(rInfo.skName)} (${rInfo.eurPerEh.toFixed(2)} €/EH)">
             ${escapeHtml(rInfo.code)} • ${rInfo.eurPerEh.toFixed(2)}€
           </span>
           ${isMe ? `<span class="me-badge">⭐ ${t('who_am_i_me_short') || 'Я'}</span>` : ''}
+          ${isDirectMgr ? `<span class="manager-role-badge">${mgrBadgeLabel}</span>` : ''}
+          ${isPeer ? `<span class="peer-team-badge">${peerBadgeLabel}</span>` : ''}
           <span style="font-size:11px; color:#64748b; font-weight:700;">
             ${worker.planEh ? `${t('node_plan')} ${worker.planEh}` : ''}
           </span>
@@ -7076,22 +7337,34 @@ function renderWorkerTreeNode(worker, isRoot = false) {
         </div>
         <div class="worker-node-actions" onmousedown="event.stopPropagation()">
           ${
-            isMe
-              ? `<span class="node-mini-btn" style="background:#facc15; color:#422006; border-color:#eab308; cursor:default;" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">${t('btn_this_is_you')}</span>`
-              : ''
+            isAssignMode
+              ? `<button type="button" class="assign-pick-btn" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)">
+                   ${assignBtnLabel}
+                 </button>`
+              : `
+                ${
+                  isMe
+                    ? `<span class="node-mini-btn" style="background:#facc15; color:#422006; border-color:#eab308; cursor:default;" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">${t('btn_this_is_you')}</span>`
+                    : ''
+                }
+                <button class="node-mini-btn" title="${escapeAttr(t('btn_vert'))}" onclick="focusPyramidOn('${worker.id}')">
+                  ${t('btn_vert')}
+                </button>
+                <button class="node-mini-btn" title="${escapeAttr(t('btn_eh'))}" onclick="openBoardsForWorkerVertical('${worker.id}')">
+                  ${t('btn_eh')}
+                </button>
+                ${
+                  canManage
+                    ? `<button class="node-mini-btn" title="${escapeAttr(t('btn_add_under'))}" onclick="openWorkerModal(null, '${worker.id}')">
+                         ${t('btn_add_under')}
+                       </button>
+                       <button class="node-mini-btn" title="Изменить" onclick="openWorkerModal('${worker.id}')">
+                         ✏️
+                       </button>`
+                    : ''
+                }
+              `
           }
-          <button class="node-mini-btn" title="${escapeAttr(t('btn_vert'))}" onclick="focusPyramidOn('${worker.id}')">
-            ${t('btn_vert')}
-          </button>
-          <button class="node-mini-btn" title="${escapeAttr(t('btn_eh'))}" onclick="openBoardsForWorkerVertical('${worker.id}')">
-            ${t('btn_eh')}
-          </button>
-          <button class="node-mini-btn" title="${escapeAttr(t('btn_add_under'))}" onclick="openWorkerModal(null, '${worker.id}')">
-            ${t('btn_add_under')}
-          </button>
-          <button class="node-mini-btn" title="Изменить" onclick="openWorkerModal('${worker.id}')">
-            ✏️
-          </button>
         </div>
       </div>
       ${childrenHtml}
@@ -7099,11 +7372,23 @@ function renderWorkerTreeNode(worker, isRoot = false) {
   `;
 }
 
-function renderHierarchyListView(rootWorker) {
+function renderHierarchyListView(rootWorker, visibleIds = null) {
+  const effectiveVisibleIds = visibleIds || getVisibleWorkerIdsForCurrentUser();
+  const isSuper = typeof isSuperAdminUser === 'function' && isSuperAdminUser();
+  const directMgr = getDirectManagerForCurrentUser();
+  const isAssignMode = Boolean(window.pendingAssignmentState);
+  const lang = state.lang || 'ru';
+  const mgrBadgeLabel = lang === 'sk' ? '👔 Vedúci' : lang === 'ua' ? '👔 Керівник' : '👔 Руководитель';
+  const peerBadgeLabel = lang === 'sk' ? '👥 Kolega' : lang === 'ua' ? '👥 Колега' : '👥 Коллега';
+  const assignBtnLabel = lang === 'sk' ? '🎯 Priradiť sem' : lang === 'ua' ? '🎯 Прив\'язати сюди' : '🎯 Привязать сюда';
+
   const rows = [];
   function walk(w, depth) {
+    if (!effectiveVisibleIds.has(w.id)) return;
     rows.push({ worker: w, depth });
-    getDirectSubordinates(w.id).forEach(ch => walk(ch, depth + 1));
+    getDirectSubordinates(w.id)
+      .filter(ch => effectiveVisibleIds.has(ch.id))
+      .forEach(ch => walk(ch, depth + 1));
   }
   walk(rootWorker, 0);
 
@@ -7115,18 +7400,27 @@ function renderHierarchyListView(rootWorker) {
           const gStats = promo.gStats;
           const rInfo = promo.currentRankInfo;
           const isMe = worker.id === state.myWorkerId;
+          const isDirectMgr = !isSuper && directMgr && worker.id === directMgr.id;
+          const isPeer = !isSuper && isDirectPeerOfCurrentUser(worker);
+          const canManage = canManageWorker(worker.id);
           const remSummary = promo.requirements
             .filter(r => !r.isMet)
             .map(r => `${r.title.split('(')[0].trim()}: ост. ${r.remainingDone} ${r.unit}`)
             .join(' | ');
 
+          const rowClickAttr = isAssignMode
+            ? `onclick="handleWorkerCardClickForAssignment('${worker.id}', event)"`
+            : '';
+
           return `
-            <div class="hierarchy-list-card" style="margin-left:${Math.min(depth * 22, 110)}px; border-left-color:${
+            <div class="hierarchy-list-card" ${rowClickAttr} style="margin-left:${Math.min(depth * 22, 110)}px; border-left-color:${
               worker.lineType === 'priama' ? '#f97316' : '#16a34a'
             }">
               <div>
                 <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                   ${isMe ? `<span class="me-badge">⭐ ${t('who_am_i_me_short') || 'Я'}</span>` : ''}
+                  ${isDirectMgr ? `<span class="manager-role-badge">${mgrBadgeLabel}</span>` : ''}
+                  ${isPeer ? `<span class="peer-team-badge">${peerBadgeLabel}</span>` : ''}
                   <span class="worker-rank-tag" style="background:${rInfo.color};">${escapeHtml(rInfo.skName)} (${rInfo.eurPerEh.toFixed(2)} €/EH)</span>
                   ${worker.targetRank ? `<span class="legend-badge-up">${t('banner_target')} ${escapeHtml(worker.targetRank)}↑</span>` : ''}
                   <strong style="font-size:15px;">${escapeHtml(worker.name)}</strong>
@@ -7139,10 +7433,20 @@ function renderHierarchyListView(rootWorker) {
                 </div>
               </div>
               <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                <button class="btn btn-outline btn-sm" onclick="focusPyramidOn('${worker.id}')">${t('banner_boards_btn')}</button>
-                <button class="btn btn-outline btn-sm" onclick="openBoardsForWorkerVertical('${worker.id}')">📒 EH</button>
-                <button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${worker.id}')">${t('btn_add_under')}</button>
-                <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${worker.id}')">✏️</button>
+                ${
+                  isAssignMode
+                    ? `<button type="button" class="assign-pick-btn" style="width:auto;" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)">${assignBtnLabel}</button>`
+                    : `
+                      <button class="btn btn-outline btn-sm" onclick="focusPyramidOn('${worker.id}')">${t('banner_boards_btn')}</button>
+                      <button class="btn btn-outline btn-sm" onclick="openBoardsForWorkerVertical('${worker.id}')">📒 EH</button>
+                      ${
+                        canManage
+                          ? `<button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${worker.id}')">${t('btn_add_under')}</button>
+                             <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${worker.id}')">✏️</button>`
+                          : ''
+                      }
+                    `
+                }
               </div>
             </div>
           `;
@@ -7153,6 +7457,8 @@ function renderHierarchyListView(rootWorker) {
 }
 
 function focusPyramidOn(workerId) {
+  const visibleIds = getVisibleWorkerIdsForCurrentUser();
+  if (!visibleIds.has(workerId)) return;
   state.pyramidFocusId = workerId;
   saveState();
   renderPyramidTab();
@@ -7174,14 +7480,20 @@ function openBoardsForWorkerVertical(workerId) {
 // ============================================================================
 
 function renderBoardsTab() {
-  if (!state.boardLeaderId || !state.workers.some(w => w.id === state.boardLeaderId)) {
-    state.boardLeaderId = state.myWorkerId || state.workers[0]?.id;
+  const visibleIds = getVisibleWorkerIdsForCurrentUser();
+  const visibleWorkers = getVisibleWorkersForCurrentUser();
+
+  if (!state.boardLeaderId || !visibleIds.has(state.boardLeaderId)) {
+    state.boardLeaderId =
+      state.myWorkerId && visibleIds.has(state.myWorkerId)
+        ? state.myWorkerId
+        : visibleWorkers[0]?.id || state.workers[0]?.id;
   }
 
   // Селектор выбора работника (чья вертикаль отображается в таблице планов и обороте EH)
   const leaderSelectEl = document.getElementById('boardLeaderSelect');
   if (leaderSelectEl) {
-    leaderSelectEl.innerHTML = getSortedWorkers()
+    leaderSelectEl.innerHTML = getSortedWorkers(visibleWorkers)
       .map(w => {
         return `<option value="${w.id}" ${w.id === state.boardLeaderId ? 'selected' : ''}>
           ${escapeHtml(formatWorkerOptionLabel(w, true))}
@@ -7190,11 +7502,11 @@ function renderBoardsTab() {
       .join('');
   }
 
-  const leader = state.workers.find(w => w.id === state.boardLeaderId) || state.workers[0];
+  const leader = visibleWorkers.find(w => w.id === state.boardLeaderId) || visibleWorkers[0] || state.workers[0];
   if (!leader) return;
 
-  // Получаем только тех работников, которые стоят в вертикали под выбранным работником (включая его самого)
-  const verticalWorkers = getWorkerAndVerticalList(leader.id);
+  // Получаем только видимых работников, которые стоят в вертикали под выбранным работником (включая его самого)
+  const verticalWorkers = getWorkerAndVerticalList(leader.id).filter(w => visibleIds.has(w.id));
   const gStats = getWorkerGroupStats(leader.id);
   const leaderRankInfo = getRankInfo(leader.rank);
 
@@ -7401,14 +7713,18 @@ function renderBoardsTab() {
             </tbody>
           </table>
 
-          <div class="board-card-footer">
-            <button class="btn btn-outline btn-sm" onclick="openNewClientModal('${worker.id}')">
-              ${t('board_btn_new_client')}
-            </button>
-            <button class="btn btn-outline btn-sm" style="color:#0369a1;" onclick="openWorkerModal('${worker.id}')">
-              ${t('board_btn_promo_plan')}
-            </button>
-          </div>
+          ${
+            canManageWorker(worker.id)
+              ? `<div class="board-card-footer">
+                   <button class="btn btn-outline btn-sm" onclick="openNewClientModal('${worker.id}')">
+                     ${t('board_btn_new_client')}
+                   </button>
+                   <button class="btn btn-outline btn-sm" style="color:#0369a1;" onclick="openWorkerModal('${worker.id}')">
+                     ${t('board_btn_promo_plan')}
+                   </button>
+                 </div>`
+              : ''
+          }
         </div>
       `;
     })
@@ -7435,13 +7751,14 @@ function openClientInTab(clientId) {
 // ============================================================================
 
 function renderClientsTab() {
+  const visibleWorkers = getVisibleWorkersForCurrentUser();
   const workerFilterEl = document.getElementById('clientWorkerFilter');
   if (workerFilterEl) {
     const myVertIds = new Set(getWorkerAndVerticalList(state.myWorkerId).map(w => w.id));
     workerFilterEl.innerHTML =
       `<option value="all" ${state.clientFilterWorker === 'all' ? 'selected' : ''}>${t('client_all_workers')} (${state.clients.length})</option>` +
       `<option value="my_vertical" ${state.clientFilterWorker === 'my_vertical' ? 'selected' : ''}>${t('client_my_vertical')} (${state.clients.filter(c => myVertIds.has(c.workerId)).length})</option>` +
-      getSortedWorkers()
+      getSortedWorkers(visibleWorkers)
         .map(
           w =>
             `<option value="${w.id}" ${state.clientFilterWorker === w.id ? 'selected' : ''}>${escapeHtml(
@@ -9333,6 +9650,18 @@ async function handleUserLoggedIn(user) {
     // Загружаем актуальные данные из облачной базы
     await fetchCloudData();
 
+    // Для обычных сотрудников (не суперадмина) по умолчанию открываем вертикаль от их прямого руководителя,
+    // чтобы они сразу видели руководителя, всех коллег под ним и свою ветку
+    if (!isSuper && profile && profile.worker_id) {
+      const meWorker = (state.workers || []).find(w => w.id === profile.worker_id);
+      if (meWorker && meWorker.managerId && (state.workers || []).some(w => w.id === meWorker.managerId)) {
+        state.pyramidFocusId = meWorker.managerId;
+      } else {
+        state.pyramidFocusId = profile.worker_id;
+      }
+      state.boardLeaderId = profile.worker_id;
+    }
+
     // Если руководитель (Матвей) - загружаем заявки на регистрацию
     if (isSuper) {
       fetchPendingApprovals();
@@ -9804,6 +10133,128 @@ function findMatchingWorkerByName(fullName, email, workersList) {
 
 window.findMatchingWorkerByName = findMatchingWorkerByName;
 
+// ============================================================================
+// ИНТЕРАКТИВНЫЙ РЕЖИМ ПРИВЯЗКИ ЗАЯВКИ КЛИКОМ ПО КАРТОЧКЕ В ВЕРТИКАЛИ
+// ============================================================================
+
+window.pendingAssignmentState = null;
+
+function renderPendingAssignmentBanner() {
+  const banner = document.getElementById('pendingAssignmentBanner');
+  if (!banner) return;
+  const st = window.pendingAssignmentState;
+  if (!st) {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+    document.body.classList.remove('assign-mode-active');
+    return;
+  }
+
+  document.body.classList.add('assign-mode-active');
+  banner.style.display = 'block';
+  const lang = (window.state && window.state.lang) || window.currentLang || 'ru';
+  const pillText = lang === 'sk' ? '🎯 Režim priradenia' : (lang === 'ua' ? '🎯 Режим прив\'язки' : '🎯 Режим привязки заявки');
+  const promptText = lang === 'sk'
+    ? `Kliknite na osobu v štruktúre, ku ktorej chcete priradiť používateľa <strong>${escapeHtml(st.fullName)}</strong> (${escapeHtml(st.email)})`
+    : (lang === 'ua'
+      ? `Клікніть на людину у вертикалі, до якої хочете прив'язати користувача <strong>${escapeHtml(st.fullName)}</strong> (${escapeHtml(st.email)})`
+      : `Кликните на человека в вертикали, к которому хотите привязать пользователя <strong>${escapeHtml(st.fullName)}</strong> (${escapeHtml(st.email)})`);
+  const btnBack = lang === 'sk' ? '📋 Späť na žiadosti' : (lang === 'ua' ? '📋 До заявок' : '📋 К заявкам');
+  const btnCancel = lang === 'sk' ? '❌ Zrušiť' : (lang === 'ua' ? '❌ Скасувати' : '❌ Отмена');
+
+  banner.innerHTML = `
+    <div class="assign-mode-banner-inner">
+      <div class="assign-mode-banner-text">
+        <span class="assign-mode-pill">${pillText}</span>
+        <span>${promptText}</span>
+      </div>
+      <div class="assign-mode-banner-actions">
+        <button type="button" class="btn btn-ghost-white btn-sm" onclick="cancelPendingWorkerAssignment(true)">
+          ${btnBack}
+        </button>
+        <button type="button" class="btn btn-sm" style="background:#ef4444; color:#fff; border:1px solid rgba(255,255,255,0.4);" onclick="cancelPendingWorkerAssignment(false)">
+          ${btnCancel}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function startPendingWorkerAssignmentById(profileId) {
+  const req = pendingApprovalsList.find(u => u.id === profileId);
+  if (!req) {
+    alert('Заявка не найдена. Попробуйте обновить список.');
+    return;
+  }
+  const fullName = req.full_name || req.email.split('@')[0];
+  startPendingWorkerAssignment(req.id, req.email, fullName);
+}
+
+function startPendingWorkerAssignment(profileId, email, fullName) {
+  window.pendingAssignmentState = { profileId, email, fullName };
+  closeApprovalsModal();
+  if (typeof state !== 'undefined') {
+    if (state.workers && state.workers.some(w => w.id === 'w_dima')) {
+      state.pyramidFocusId = 'w_dima';
+    }
+  }
+  if (typeof switchTab === 'function') {
+    switchTab('pyramid');
+  }
+  renderPendingAssignmentBanner();
+  if (typeof renderPyramidTab === 'function') {
+    renderPyramidTab();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelPendingWorkerAssignment(reopenModal = false) {
+  window.pendingAssignmentState = null;
+  renderPendingAssignmentBanner();
+  if (typeof renderPyramidTab === 'function') {
+    renderPyramidTab();
+  }
+  if (reopenModal) {
+    openApprovalsModal();
+  }
+}
+
+async function handleWorkerCardClickForAssignment(workerId, evt) {
+  if (!window.pendingAssignmentState) return;
+  if (evt && typeof evt.stopPropagation === 'function') {
+    evt.stopPropagation();
+  }
+  const { profileId, email, fullName } = window.pendingAssignmentState;
+  const targetWorker = (state.workers || []).find(w => w.id === workerId);
+  if (!targetWorker) return;
+
+  const manager = targetWorker.managerId
+    ? (state.workers || []).find(w => w.id === targetWorker.managerId)
+    : null;
+  const mgrPart = manager ? `под ${manager.name}` : 'верхний уровень';
+  const existingEmailWarn =
+    targetWorker.email && targetWorker.email.toLowerCase() !== email.toLowerCase()
+      ? `\n⚠️ Внимание: к этой карточке уже привязана почта ${targetWorker.email}. Она будет заменена на ${email}.`
+      : '';
+
+  const confirmed = confirm(
+    `Привязать заявку к выбранному человеку в вертикали?\n\n` +
+      `👤 Заявка: ${fullName} (${email})\n` +
+      `📌 Карточка: [${targetWorker.rank}] ${targetWorker.name} (${mgrPart})` +
+      `${existingEmailWarn}\n\n` +
+      `Нажмите «ОК» для подтверждения привязки.`
+  );
+
+  if (!confirmed) return;
+
+  await linkPendingUserToWorker(profileId, email, fullName, workerId);
+}
+
+window.startPendingWorkerAssignmentById = startPendingWorkerAssignmentById;
+window.startPendingWorkerAssignment = startPendingWorkerAssignment;
+window.cancelPendingWorkerAssignment = cancelPendingWorkerAssignment;
+window.handleWorkerCardClickForAssignment = handleWorkerCardClickForAssignment;
+
 function renderApprovalsList() {
   const listEl = document.getElementById('ovb_approvals_list');
   if (!listEl) return;
@@ -9813,11 +10264,12 @@ function renderApprovalsList() {
   const emptyDesc = lang === 'sk' ? 'Všetci zaregistrovaní spolupracovníci sú už priradení do štruktúry.' : (lang === 'ua' ? 'Усі зареєстровані співробітники вже розподілені по вертикалі.' : 'Все зарегистрированные сотрудники уже распределены по вертикали.');
   const lblReg = lang === 'sk' ? 'Registrácia:' : (lang === 'ua' ? 'Реєстрація:' : 'Регистрация:');
   const lblPending = lang === 'sk' ? 'Čaká na priradenie' : (lang === 'ua' ? 'Очікує прив\'язки' : 'Ожидает привязки');
-  const lblLinkWorker = lang === 'sk' ? '🔗 Priradiť k existujúcej karte v štruktúre:' : (lang === 'ua' ? '🔗 Прив\'язати до існуючої картки у вертикалі:' : '🔗 Привязать к существующей карточке в вертикали:');
+  const lblLinkWorker = lang === 'sk' ? '🔗 Alebo vyberte existujúcu kartu zo zoznamu:' : (lang === 'ua' ? '🔗 Або оберіть існуючу картку зі списку:' : '🔗 Или выберите существующую карточку из списка:');
   const lblSelectPlaceholder = lang === 'sk' ? '— Vyberte existujúceho spolupracovníka —' : (lang === 'ua' ? '— Оберіть існуючого співробітника —' : '— Выберите существующую карточку сотрудника —');
   const lblUnder = lang === 'sk' ? 'pod' : (lang === 'ua' ? 'під' : 'под');
+  const btnPickInVertical = lang === 'sk' ? '🎯 Vybrať osobu v štruktúre (kliknutím)' : (lang === 'ua' ? '🎯 Обрати людину у вертикалі (кліком)' : '🎯 Выбрать человека в вертикали (кликом)');
   const btnReject = lang === 'sk' ? '❌ Zamietnuť' : (lang === 'ua' ? '❌ Відхилити' : '❌ Отклонить');
-  const btnApprove = lang === 'sk' ? '✅ Schváliť a priradiť ku karte' : (lang === 'ua' ? '✅ Схвалити та прив\'язати до картки' : '✅ Одобрить и привязать к карточке');
+  const btnApprove = lang === 'sk' ? '✅ Priradiť zo zoznamu' : (lang === 'ua' ? '✅ Прив\'язати зі списку' : '✅ Привязать по списку');
 
   if (pendingApprovalsList.length === 0) {
     listEl.innerHTML = `
@@ -9849,24 +10301,13 @@ function renderApprovalsList() {
     if (matchedWorker) {
       const mgrText = matchedManager ? ` (${lblUnder} ${escapeHtml(matchedManager.name)})` : '';
       const matchedMsg = lang === 'sk'
-        ? `✅ Automaticky nájdená karta podľa mena: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
+        ? `✅ Nájdená podobná karta: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
         : (lang === 'ua'
-          ? `✅ Автоматично знайдено картку за ім'ям: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
-          : `✅ Автоматически найдена карточка по имени: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`);
+          ? `✅ Знайдено схожу картку: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`
+          : `✅ Найдена похожая карточка: <strong>[${escapeHtml(matchedWorker.rank)}] ${escapeHtml(matchedWorker.name)}</strong>${mgrText}`);
       matchBannerHtml = `
         <div style="background:#f0fdf4; border:1px solid #86efac; color:#166534; padding:8px 12px; border-radius:8px; font-size:12.5px;">
           ${matchedMsg}
-        </div>
-      `;
-    } else {
-      const noMatchMsg = lang === 'sk'
-        ? '⚠️ Zhoda podľa mena sa nenašla — vyberte existujúcu kartu zo zoznamu nižšie (nová karta sa nevytvorí).'
-        : (lang === 'ua'
-          ? '⚠️ Збіг за ім\'ям та прізвищем не знайдено — оберіть існуючу картку зі списку нижче (нова картка не створюється).'
-          : '⚠️ Совпадение по имени и фамилии не найдено — выберите существующую карточку из списка ниже (новая карточка не создаётся).');
-      matchBannerHtml = `
-        <div style="background:#fffbeb; border:1px solid #fde68a; color:#92400e; padding:8px 12px; border-radius:8px; font-size:12.5px;">
-          ${noMatchMsg}
         </div>
       `;
     }
@@ -9886,10 +10327,15 @@ function renderApprovalsList() {
 
         ${matchBannerHtml}
 
-        <div style="background:#fff; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+        <!-- ОСНОВНОЙ СПОСОБ: КЛИКНУТЬ ПРЯМО НА ЧЕЛОВЕКА В ВЕРТИКАЛИ -->
+        <button type="button" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px 14px; font-size:13.5px; font-weight:700; background:linear-gradient(90deg,#025AB2,#0284c7); border:none; box-shadow:0 3px 10px rgba(2,90,178,0.28);" onclick="startPendingWorkerAssignmentById('${uid}')">
+          ${btnPickInVertical}
+        </button>
+
+        <div style="background:#fff; padding:10px 12px; border-radius:8px; border:1px solid #e2e8f0;">
           <div class="form-group" style="margin:0;">
-            <label for="link_worker_${uid}" style="font-size:12px; font-weight:700; display:block; margin-bottom:6px; color:#0f172a;">${lblLinkWorker}</label>
-            <select id="link_worker_${uid}" class="select-field" style="width:100%; font-size:13px; padding:7px 10px; font-weight:600;">
+            <label for="link_worker_${uid}" style="font-size:11.5px; font-weight:700; display:block; margin-bottom:5px; color:#475569;">${lblLinkWorker}</label>
+            <select id="link_worker_${uid}" class="select-field" style="width:100%; font-size:12.5px; padding:6px 10px; font-weight:600;">
               <option value="">${lblSelectPlaceholder}</option>
               ${sortedWorkers.map(w => {
                 const mgr = w.managerId ? workersMap[w.managerId] : null;
@@ -9902,11 +10348,11 @@ function renderApprovalsList() {
           </div>
         </div>
 
-        <div style="display:flex; justify-content:flex-end; gap:8px;">
-          <button class="btn btn-outline btn-sm" onclick="rejectPendingUser('${uid}', '${safeName}')" style="color:#dc2626; border-color:#fca5a5;">
+        <div style="display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="rejectPendingUserById('${uid}')" style="color:#dc2626; border-color:#fca5a5;">
             ${btnReject}
           </button>
-          <button class="btn btn-primary btn-sm" onclick="approvePendingUser('${uid}', '${safeEmail}', '${safeName}')">
+          <button type="button" class="btn btn-outline btn-sm" onclick="approvePendingUserById('${uid}')">
             ${btnApprove}
           </button>
         </div>
@@ -9915,11 +10361,27 @@ function renderApprovalsList() {
   }).join('');
 }
 
+function approvePendingUserById(profileId) {
+  const req = pendingApprovalsList.find(u => u.id === profileId);
+  if (!req) return;
+  const fullName = req.full_name || req.email.split('@')[0];
+  approvePendingUser(req.id, req.email, fullName);
+}
+
+function rejectPendingUserById(profileId) {
+  const req = pendingApprovalsList.find(u => u.id === profileId);
+  if (!req) return;
+  const fullName = req.full_name || req.email.split('@')[0];
+  rejectPendingUser(req.id, fullName);
+}
+
+window.approvePendingUserById = approvePendingUserById;
+window.rejectPendingUserById = rejectPendingUserById;
+
 async function approvePendingUser(profileId, email, fullName) {
   const linkSelect = document.getElementById(`link_worker_${profileId}`);
   const selectedWorkerId = (linkSelect?.value || '').trim();
 
-  // Если выпадающий список не выбран — пробуем ещё раз автопоиск по имени и фамилии
   let targetWorker = selectedWorkerId
     ? (state.workers || []).find(w => w.id === selectedWorkerId)
     : null;
@@ -9932,11 +10394,20 @@ async function approvePendingUser(profileId, email, fullName) {
   }
 
   if (!targetWorker) {
-    alert(`⚠️ Не выбрана существующая карточка для "${fullName}".\n\nНовые карточки при одобрении больше не создаются автоматически. Пожалуйста, выберите нужного сотрудника из списка (или сначала добавьте его в нужное место в вертикали, а затем привяжите заявку).`);
+    alert(`⚠️ Не выбрана существующая карточка для "${fullName}".\n\nНажмите «🎯 Выбрать человека в вертикали (кликом)» или выберите карточку из списка.`);
     return;
   }
 
-  const workerId = targetWorker.id;
+  await linkPendingUserToWorker(profileId, email, fullName, targetWorker.id);
+}
+
+async function linkPendingUserToWorker(profileId, email, fullName, workerId) {
+  const targetWorker = (state.workers || []).find(w => w.id === workerId);
+  if (!targetWorker) {
+    alert('Выбранная карточка не найдена в вертикали.');
+    return;
+  }
+
   const rank = targetWorker.rank || 'SA1';
   const manager = targetWorker.managerId ? (state.workers || []).find(w => w.id === targetWorker.managerId) : null;
 
@@ -9971,17 +10442,26 @@ async function approvePendingUser(profileId, email, fullName) {
 
     if (pErr) throw pErr;
 
+    // Выходим из режима привязки
+    window.pendingAssignmentState = null;
+    renderPendingAssignmentBanner();
+
     const mgrSuffix = manager ? ` (под ${manager.name})` : '';
     alert(`🎉 Сотрудник ${fullName} одобрен и привязан к существующей карточке [${rank}] ${targetWorker.name}${mgrSuffix}!`);
 
     await fetchCloudData();
     await fetchPendingApprovals();
     renderApprovalsList();
+    if (typeof focusPyramidOn === 'function') {
+      focusPyramidOn(targetWorker.managerId || targetWorker.id);
+    }
   } catch (err) {
     console.error('Ошибка утверждения сотрудника:', err);
     alert('Ошибка при утверждении: ' + (err.message || 'Попробуйте снова'));
   }
 }
+
+window.linkPendingUserToWorker = linkPendingUserToWorker;
 
 async function rejectPendingUser(profileId, fullName) {
   if (!confirm(`Вы действительно хотите отклонить заявку от ${fullName}?`)) return;
