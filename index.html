@@ -7335,37 +7335,24 @@ function renderWorkerTreeNode(worker, isRoot = false, visibleIds = null) {
               : ''
           }
         </div>
-        <div class="worker-node-actions" onmousedown="event.stopPropagation()">
-          ${
-            isAssignMode
-              ? `<button type="button" class="assign-pick-btn" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)">
+        ${
+          isAssignMode
+            ? `<div class="worker-node-actions" onmousedown="event.stopPropagation()">
+                 <button type="button" class="assign-pick-btn" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)">
                    ${assignBtnLabel}
-                 </button>`
-              : `
-                ${
-                  isMe
-                    ? `<span class="node-mini-btn" style="background:#facc15; color:#422006; border-color:#eab308; cursor:default;" title="${escapeAttr(t('who_am_i_me') || 'Ваш профиль')}">${t('btn_this_is_you')}</span>`
-                    : ''
-                }
-                <button class="node-mini-btn" title="${escapeAttr(t('btn_vert'))}" onclick="focusPyramidOn('${worker.id}')">
-                  ${t('btn_vert')}
-                </button>
-                <button class="node-mini-btn" title="${escapeAttr(t('btn_eh'))}" onclick="openBoardsForWorkerVertical('${worker.id}')">
-                  ${t('btn_eh')}
-                </button>
-                ${
-                  canManage
-                    ? `<button class="node-mini-btn" title="${escapeAttr(t('btn_add_under'))}" onclick="openWorkerModal(null, '${worker.id}')">
-                         ${t('btn_add_under')}
-                       </button>
-                       <button class="node-mini-btn" title="Изменить" onclick="openWorkerModal('${worker.id}')">
-                         ✏️
-                       </button>`
-                    : ''
-                }
-              `
-          }
-        </div>
+                 </button>
+               </div>`
+            : canManage
+              ? `<div class="worker-node-actions" onmousedown="event.stopPropagation()">
+                   <button class="node-mini-btn" title="${escapeAttr(t('btn_add_under'))}" onclick="openWorkerModal(null, '${worker.id}')">
+                     ${t('btn_add_under')}
+                   </button>
+                   <button class="node-mini-btn" title="Изменить" onclick="openWorkerModal('${worker.id}')">
+                     ✏️
+                   </button>
+                 </div>`
+              : ''
+        }
       </div>
       ${childrenHtml}
     </li>
@@ -7436,16 +7423,10 @@ function renderHierarchyListView(rootWorker, visibleIds = null) {
                 ${
                   isAssignMode
                     ? `<button type="button" class="assign-pick-btn" style="width:auto;" onclick="handleWorkerCardClickForAssignment('${worker.id}', event)">${assignBtnLabel}</button>`
-                    : `
-                      <button class="btn btn-outline btn-sm" onclick="focusPyramidOn('${worker.id}')">${t('banner_boards_btn')}</button>
-                      <button class="btn btn-outline btn-sm" onclick="openBoardsForWorkerVertical('${worker.id}')">📒 EH</button>
-                      ${
-                        canManage
-                          ? `<button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${worker.id}')">${t('btn_add_under')}</button>
-                             <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${worker.id}')">✏️</button>`
-                          : ''
-                      }
-                    `
+                    : canManage
+                      ? `<button class="btn btn-teal btn-sm" onclick="openWorkerModal(null, '${worker.id}')">${t('btn_add_under')}</button>
+                         <button class="btn btn-outline btn-sm" onclick="openWorkerModal('${worker.id}')">✏️</button>`
+                      : ''
                 }
               </div>
             </div>
